@@ -132,7 +132,7 @@ class _CheckinPageState extends State<CheckinPage> {
                       fontWeight: FontWeight.bold, color: Colors.red)),
               content: Text('ข้อมูลไม่ครบถ้วนหรือไม่ถูกต้อง'),
               actions: <Widget>[
-                FlatButton(
+                TextButton(
                   child: Text('ตกลง',
                       style: TextStyle(
                           fontWeight: FontWeight.bold, color: Colors.red)),
@@ -155,7 +155,7 @@ class _CheckinPageState extends State<CheckinPage> {
                     TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
             content: Text('กรุณาสแกนรหัสรถใหม่ที่ขึ้นต้นด้วย CAR หรือ BTC'),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 child: Text('ตกลง',
                     style: TextStyle(
                         fontWeight: FontWeight.bold, color: Colors.red)),
@@ -322,13 +322,17 @@ class _CheckinPageState extends State<CheckinPage> {
                               child: SizedBox(
                                 height: 45.0,
                                 width: targetWidth,
-                                child: new RaisedButton(
-                                    elevation: 5,
-                                    splashColor: Colors.grey,
-                                    shape: new RoundedRectangleBorder(
-                                        borderRadius:
-                                            new BorderRadius.circular(5.0)),
-                                    color: Colors.blue[700],
+                                child: new ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      elevation: 5,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      backgroundColor: Colors.blue[700],
+                                      textStyle: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
                                     child: new Text(
                                         is_car_scan == false
                                             ? 'สแกนรถ'
@@ -354,13 +358,17 @@ class _CheckinPageState extends State<CheckinPage> {
                               child: SizedBox(
                                 height: 45.0,
                                 width: targetWidth,
-                                child: new RaisedButton(
-                                    elevation: 5,
-                                    splashColor: Colors.grey,
-                                    shape: new RoundedRectangleBorder(
-                                        borderRadius:
-                                            new BorderRadius.circular(5.0)),
-                                    color: Colors.grey[700],
+                                child: new ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      elevation: 5,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      backgroundColor: Colors.grey[700],
+                                      textStyle: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
                                     child: new Text('ล้างข้อมูล',
                                         style: new TextStyle(
                                             fontSize: 20.0,
@@ -388,13 +396,17 @@ class _CheckinPageState extends State<CheckinPage> {
                               child: SizedBox(
                                 height: 45.0,
                                 width: targetWidth,
-                                child: new RaisedButton(
-                                    elevation: 5,
-                                    splashColor: Colors.grey,
-                                    shape: new RoundedRectangleBorder(
-                                        borderRadius:
-                                            new BorderRadius.circular(5.0)),
-                                    color: Colors.green[700],
+                                child: new ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      elevation: 5,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      backgroundColor: Colors.green[700],
+                                      textStyle: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
                                     child: new Text('เข้าใช้งาน',
                                         style: new TextStyle(
                                             fontSize: 20.0,
@@ -408,7 +420,7 @@ class _CheckinPageState extends State<CheckinPage> {
                       SizedBox(
                         height: 10.0,
                       ),
-                      FlatButton(
+                      TextButton(
                           onPressed: () {
                             Navigator.push(
                                 context,
@@ -422,11 +434,11 @@ class _CheckinPageState extends State<CheckinPage> {
                       SizedBox(height: 5),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[Text('version 2.2')],
+                        children: <Widget>[Text('version 2.4')],
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[Text('update 04-09-2022')],
+                        children: <Widget>[Text('update 18-12-2022')],
                       )
                     ],
                   ),

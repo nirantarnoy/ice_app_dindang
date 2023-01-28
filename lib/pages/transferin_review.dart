@@ -189,7 +189,7 @@ class _TransferInReviewPageState extends State<TransferInReviewPage> {
                                       content:
                                           Text('คุณต้องการยืนยันการใช่หรือไม่'),
                                       actions: <Widget>[
-                                        FlatButton(
+                                        TextButton(
                                           onPressed: () {
                                             Provider.of<TransferinData>(context,
                                                     listen: false)
@@ -208,7 +208,7 @@ class _TransferInReviewPageState extends State<TransferInReviewPage> {
                                           },
                                           child: Text('ยืนยัน'),
                                         ),
-                                        FlatButton(
+                                        TextButton(
                                           onPressed: () {
                                             Navigator.of(context).pop(false);
                                           },

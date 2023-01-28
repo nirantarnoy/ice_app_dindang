@@ -382,12 +382,16 @@ class _ItemsState extends State<Items> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            RaisedButton(
-                              padding: EdgeInsets.only(right: 8),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15)),
-                              color: Colors.blue[500],
-                              textColor: Colors.white,
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                padding: EdgeInsets.only(right: 8),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15)),
+                                backgroundColor: Colors.blue[500],
+                                textStyle: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
                               onPressed: () {},
                               child: Text("บันทีก"),
                             ),

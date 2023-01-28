@@ -144,7 +144,7 @@ class _AuthPageState extends State<AuthPage> {
     //       title: Text('Sucess!'),
     //       content: Text(''),
     //       actions: <Widget>[
-    //         FlatButton(
+    //         TextButton(
     //           child: Text('ตกลง'),
     //           onPressed: () {
     //             Navigator.of(context).pop();
@@ -165,7 +165,7 @@ class _AuthPageState extends State<AuthPage> {
       //       title: Text('Sucess!'),
       //       content: Text(''),
       //       actions: <Widget>[
-      //         FlatButton(
+      //         TextButton(
       //           child: Text('ตกลง'),
       //           onPressed: () {
       //             Navigator.of(context).pop();
@@ -185,7 +185,7 @@ class _AuthPageState extends State<AuthPage> {
                     TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
             content: Text('ชื่อหรือรหัสผ่านไม่ถูกต้อง'),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 child: Text('OK',
                     style: TextStyle(
                         fontWeight: FontWeight.bold, color: Colors.red)),
@@ -247,7 +247,7 @@ class _AuthPageState extends State<AuthPage> {
                       ),
                       _buildPasswordTextField(),
 
-                      // FlatButton(
+                      // TextButton(
                       //   child: Text(
                       //       'Switch to ${_authMode == AuthMode.Login ? 'Signup' : 'Login'}'),
                       //   onPressed: () {
@@ -266,13 +266,16 @@ class _AuthPageState extends State<AuthPage> {
                         child: SizedBox(
                           height: 45.0,
                           width: targetWidth,
-                          child: new RaisedButton(
-                              elevation: 5,
-                              splashColor: Colors.grey,
-                              shape: new RoundedRectangleBorder(
-                                  borderRadius:
-                                      new BorderRadius.circular(30.0)),
-                              color: Colors.blue[700],
+                          child: new ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                elevation: 5,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30)),
+                                backgroundColor: Colors.grey,
+                                textStyle: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
                               child: new Text('เข้าสู่ระบบ',
                                   style: new TextStyle(
                                       fontSize: 20.0, color: Colors.white)),
@@ -284,11 +287,11 @@ class _AuthPageState extends State<AuthPage> {
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[Text('version 2.2')],
+                        children: <Widget>[Text('version 2.4')],
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[Text('update 04-09-2022')],
+                        children: <Widget>[Text('update 18-12-2022')],
                       )
                     ],
                   ),

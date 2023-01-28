@@ -92,7 +92,7 @@ class _CreateorderPageState extends State<CreateorderPage> {
             title: Text(title),
             content: Text(text),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -452,7 +452,7 @@ class Items extends StatelessWidget {
                                       content:
                                           Text('จำนวนขายมากกว่าจำนวนคงเหลือ'),
                                       actions: <Widget>[
-                                        FlatButton(
+                                        TextButton(
                                             onPressed: () {
                                               Navigator.of(context).pop(false);
                                             },
@@ -482,12 +482,13 @@ class Items extends StatelessWidget {
                       child: SizedBox(
                         height: 55.0,
                         width: targetWidth,
-                        child: new RaisedButton(
-                            elevation: 5,
-                            splashColor: Colors.grey,
-                            shape: new RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(15.0)),
-                            color: Colors.green[700],
+                        child: new ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15)),
+                              backgroundColor: Colors.green[700],
+                            ),
                             child: new Text('เงินสด',
                                 style: new TextStyle(
                                     fontSize: 20.0, color: Colors.white)),
@@ -502,12 +503,16 @@ class Items extends StatelessWidget {
                       child: SizedBox(
                         height: 55.0,
                         width: targetWidth,
-                        child: new RaisedButton(
-                            elevation: 5,
-                            splashColor: Colors.grey,
-                            shape: new RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(15.0)),
-                            color: Colors.blue[700],
+                        child: new ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15)),
+                              backgroundColor: Colors.blue[700],
+                              textStyle: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
                             child: new Text('เงินเชื่อ',
                                 style: new TextStyle(
                                     fontSize: 20.0, color: Colors.white)),
@@ -522,12 +527,16 @@ class Items extends StatelessWidget {
                       child: SizedBox(
                         height: 55.0,
                         width: targetWidth,
-                        child: new RaisedButton(
-                            elevation: 5,
-                            splashColor: Colors.grey,
-                            shape: new RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(15.0)),
-                            color: Colors.grey,
+                        child: new ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15)),
+                              backgroundColor: Colors.grey,
+                              textStyle: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
                             child: new Text('ฟรี',
                                 style: new TextStyle(
                                     fontSize: 20.0, color: Colors.white)),
@@ -649,7 +658,7 @@ class Items extends StatelessWidget {
               ),
               content: Text('กรุณาป้อนจำนวนที่ต้องการขาย'),
               actions: <Widget>[
-                FlatButton(
+                TextButton(
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -668,7 +677,7 @@ class Items extends StatelessWidget {
         payment_type_id,
       );
       if (issave == true) {
-        Scaffold.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Row(
               children: <Widget>[
@@ -689,7 +698,7 @@ class Items extends StatelessWidget {
           ),
         );
       } else {
-        Scaffold.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Row(
               children: <Widget>[
@@ -728,7 +737,7 @@ class Items extends StatelessWidget {
                 //     .avl_qty;
                 String _avl = _onhand;
                 if (selectedValue == null || selectedValue == '') {
-                  Scaffold.of(context).showSnackBar(
+                  ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Row(
                         children: <Widget>[

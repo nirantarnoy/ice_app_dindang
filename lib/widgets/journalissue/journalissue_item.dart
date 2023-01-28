@@ -114,13 +114,18 @@ class _JournalissueitemState extends State<Journalissueitem> {
                         issues.hasissue_open
                             ? Expanded(
                                 // ignore: deprecated_member_use
-                                child: new RaisedButton(
-                                    elevation: 0.5,
-                                    splashColor: Colors.grey,
-                                    shape: new RoundedRectangleBorder(
-                                        borderRadius:
-                                            new BorderRadius.circular(0.0)),
-                                    color: Colors.green,
+                                child: new ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      elevation: 0.5,
+                                      padding: EdgeInsets.only(right: 8),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(0)),
+                                      backgroundColor: Colors.green,
+                                      textStyle: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
                                     child: Column(
                                       children: [
                                         new Text(
@@ -279,12 +284,16 @@ class _JournalissueitemState extends State<Journalissueitem> {
                         height: 5,
                       ),
                       // ignore: deprecated_member_use
-                      new RaisedButton(
-                          elevation: 0.2,
-                          splashColor: Colors.grey,
-                          shape: new RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(15.0)),
-                          color: Colors.blue[600],
+                      new ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            elevation: 0.2,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15)),
+                            backgroundColor: Colors.blue[600],
+                            textStyle: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
                           child: Column(
                             children: [
                               SizedBox(
@@ -342,13 +351,16 @@ class _JournalissueitemState extends State<Journalissueitem> {
                             SizedBox(
                               height: 5,
                             ),
-                            new RaisedButton(
-                                elevation: 0.2,
-                                splashColor: Colors.grey,
-                                shape: new RoundedRectangleBorder(
-                                    borderRadius:
-                                        new BorderRadius.circular(15.0)),
-                                color: Colors.blue[600],
+                            new ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  elevation: 0.2,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15)),
+                                  backgroundColor: Colors.blue[600],
+                                  textStyle: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
                                 child: Column(
                                   children: [
                                     SizedBox(

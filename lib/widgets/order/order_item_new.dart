@@ -184,9 +184,9 @@ class _OrderItemNewState extends State<OrderItemNew> {
                     SizedBox(
                       width: 5,
                     ),
-                    FlatButton(
-                        color: Colors.grey[100],
-                        height: 30,
+                    TextButton(
+                        style: TextButton.styleFrom(
+                            backgroundColor: Colors.grey[100]),
                         onPressed: () {
                           selectedValue = '';
                           orders.searchBycustomer = selectedValue;
@@ -449,13 +449,13 @@ class _ItemsState extends State<Items> {
             title: Text('แจ้งเตือน'),
             content: Text('ต้องการลบข้อมูลใช่หรือไม่'),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 onPressed: () {
                   Navigator.of(context).pop(true);
                 },
                 child: Text('ยืนยัน'),
               ),
-              FlatButton(
+              TextButton(
                 onPressed: () {
                   Navigator.of(context).pop(false);
                 },
@@ -472,7 +472,7 @@ class _ItemsState extends State<Items> {
               .removeOrderDetail(widget._order_line_id);
           widget._orders.removeAt(widget._index);
         });
-        Scaffold.of(context).showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Row(
             children: <Widget>[
               Icon(

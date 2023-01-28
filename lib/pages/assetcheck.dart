@@ -214,7 +214,7 @@ class _AssetcheckPageState extends State<AssetcheckPage> {
             title: Text(title),
             content: Text(text),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },

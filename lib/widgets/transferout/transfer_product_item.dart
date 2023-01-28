@@ -43,7 +43,7 @@ class _TransferProductItemState extends State<TransferProductItem> {
       );
       //Navigator.of(context).pop();
       // if (res == true) {
-      //   Scaffold.of(context).showSnackBar(
+      //   ScaffoldMessenger.of(context).showSnackBar(
       //     SnackBar(
       //       content: Row(
       //         children: <Widget>[
@@ -343,17 +343,23 @@ class _TransferProductItemState extends State<TransferProductItem> {
                                                 Consumer<IssueData>(
                                                   builder: (context,
                                                           transferdata, _) =>
-                                                      RaisedButton(
-                                                    padding: EdgeInsets.only(
-                                                        right: 8),
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        15)),
-                                                    color: Colors.blue[500],
-                                                    textColor: Colors.white,
+                                                      ElevatedButton(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      padding: EdgeInsets.only(
+                                                          right: 8),
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          15)),
+                                                      backgroundColor:
+                                                          Colors.blue[500],
+                                                      textStyle: TextStyle(
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
                                                     onPressed: () {
                                                       _submitForm(
                                                         transferdata
@@ -366,15 +372,23 @@ class _TransferProductItemState extends State<TransferProductItem> {
                                                   ),
                                                 ),
                                                 SizedBox(width: 20),
-                                                RaisedButton(
-                                                  padding:
-                                                      EdgeInsets.only(left: 8),
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              15)),
-                                                  color: Colors.orange,
-                                                  textColor: Colors.white,
+                                                ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    padding: EdgeInsets.only(
+                                                        left: 8),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        15)),
+                                                    backgroundColor:
+                                                        Colors.orange,
+                                                    textStyle: TextStyle(
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
                                                   onPressed: () {
                                                     Navigator.pop(context);
                                                   },
@@ -544,7 +558,7 @@ class _ItemsState extends State<Items> {
                                   title: Text('แจ้งเตือน'),
                                   content: Text('จำนวนไม่พอสำหรับการทำรายการ'),
                                   actions: <Widget>[
-                                    FlatButton(
+                                    TextButton(
                                         onPressed: () {
                                           _transferqtyController.text =
                                               widget._avl_qty;

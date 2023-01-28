@@ -253,13 +253,13 @@ class _ItemsState extends State<Items> {
             title: Text('แจ้งเตือน'),
             content: Text('ต้องการลบข้อมูลใช่หรือไม่'),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 onPressed: () {
                   Navigator.of(context).pop(true);
                 },
                 child: Text('ยืนยัน'),
               ),
-              FlatButton(
+              TextButton(
                 onPressed: () {
                   Navigator.of(context).pop(false);
                 },
@@ -276,7 +276,7 @@ class _ItemsState extends State<Items> {
               .removePlanCustomer(widget._id, widget._customer_id);
           widget._plans.removeAt(widget._index);
         });
-        Scaffold.of(context).showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Row(
             children: <Widget>[
               Icon(

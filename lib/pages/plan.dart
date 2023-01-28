@@ -80,7 +80,7 @@ class _PlanPageState extends State<PlanPage> {
             title: Text(title),
             content: Text(text),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
