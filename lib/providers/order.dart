@@ -25,6 +25,8 @@ class OrderData with ChangeNotifier {
       "http://103.253.73.108/icesystem/frontend/web/api/order/addorder";
   final String url_to_add_order_new =
       "http://103.253.73.108/icesystem/frontend/web/api/order/addordernew";
+  final String url_to_add_order_newvp19 =
+      "http://103.253.73.108/icesystem/frontend/web/api/order/addordernewvp19";
   // "http://192.168.1.120/icesystem/frontend/web/api/order/addorder";
   final String url_to_add_order_transfer =
       "http://103.253.73.108/icesystem/frontend/web/api/order/addordertransfer";
@@ -44,6 +46,8 @@ class OrderData with ChangeNotifier {
       "http://103.253.73.108/icesystem/frontend/web/api/order/closeorder";
   final String url_to_cancel_order =
       "http://103.253.73.108/icesystem/frontend/web/api/order/cancelorder";
+  final String url_to_cancel_ordervp19 =
+      "http://103.253.73.108/icesystem/frontend/web/api/order/cancelordervp19";
   //  "http://192.168.1.120/icesystem/frontend/web/api/order/deleteorderline";
 
   ///// for common
@@ -762,7 +766,7 @@ class OrderData with ChangeNotifier {
     print('data will cancel order is ${orderData}');
     try {
       http.Response response;
-      response = await http.post(Uri.parse(url_to_cancel_order),
+      response = await http.post(Uri.parse(url_to_cancel_ordervp19),
           headers: {'Content-Type': 'application/json'},
           body: json.encode(orderData));
 

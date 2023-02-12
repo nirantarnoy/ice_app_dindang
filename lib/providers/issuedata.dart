@@ -18,6 +18,8 @@ class IssueData with ChangeNotifier {
       "http://103.253.73.108/icesystem/frontend/web/api/journalissue/oldstockroute";
   final String url_to_user_confirm =
       "http://103.253.73.108/icesystem/frontend/web/api/journalissue/issueconfirm2";
+  final String url_to_user_confirmvp18 =
+      "http://103.253.73.108/icesystem/frontend/web/api/journalissue/issueconfirm2vp18";
   final String url_to_user_confirm_cancel =
       "http://103.253.73.108/icesystem/frontend/web/api/journalissue/issueconfirmcancel";
 
@@ -314,7 +316,7 @@ class IssueData with ChangeNotifier {
     try {
       http.Response response;
       response = await http.post(
-        Uri.parse(url_to_user_confirm),
+        Uri.parse(url_to_user_confirmvp18),
         headers: {'Content-Type': 'application/json'},
         body: json.encode(updateData),
       );

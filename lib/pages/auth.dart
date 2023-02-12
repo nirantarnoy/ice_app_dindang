@@ -287,11 +287,11 @@ class _AuthPageState extends State<AuthPage> {
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[Text('version 2.4')],
+                        children: <Widget>[Text('version 2.5')],
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[Text('update 18-12-2022')],
+                        children: <Widget>[Text('update 29-01-2023')],
                       )
                     ],
                   ),
