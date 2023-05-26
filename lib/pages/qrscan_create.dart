@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:barcode_widget/barcode_widget.dart';
+//import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
@@ -38,13 +38,13 @@ class _QrcreatePageState extends State<QrcreatePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                BarcodeWidget(
-                  color: Colors.black,
-                  data: controller.text ?? 'Hello',
-                  barcode: Barcode.qrCode(),
-                  width: 150,
-                  height: 150,
-                ),
+                // BarcodeWidget(
+                //   color: Colors.black,
+                //   data: controller.text ?? 'Hello',
+                //   barcode: Barcode.qrCode(),
+                //   width: 150,
+                //   height: 150,
+                // ),
                 SizedBox(
                   height: 40,
                 ),
@@ -55,7 +55,7 @@ class _QrcreatePageState extends State<QrcreatePage> {
                 SizedBox(
                   height: 8,
                 ),
-                RaisedButton(
+                ElevatedButton(
                   onPressed: () {
                     setState(() {
                       controller.text = qr_text;

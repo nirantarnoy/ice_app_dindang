@@ -12,6 +12,7 @@ import 'package:ice_app_new/pages/carload_review.dart';
 import 'package:ice_app_new/pages/checkinpage.dart';
 import 'package:ice_app_new/pages/createorder_boot.dart';
 import 'package:ice_app_new/pages/createorder_new.dart';
+import 'package:ice_app_new/pages/createorder_new_pos.dart';
 import 'package:ice_app_new/pages/createplan.dart';
 import 'package:ice_app_new/pages/home.dart';
 import 'package:ice_app_new/pages/home_offline.dart';
@@ -128,12 +129,12 @@ class _MyAppState extends State<MyApp> {
           theme: ThemeData(
             brightness: Brightness.light,
             primarySwatch: Colors.lightBlue,
-            accentColor: Colors.lightBlue,
-            buttonColor: Colors.blue,
+            // accentColor: Colors.lightBlue,
+            // buttonColor: Colors.blue,
           ),
           darkTheme: ThemeData(
             brightness: Brightness.dark,
-            accentColor: Colors.amber,
+            // accentColor: Colors.amber,
           ),
           // fontFamily: 'Kanit-Regular'),
           home: DoubleBack(
@@ -146,6 +147,7 @@ class _MyAppState extends State<MyApp> {
             OrderDetailPage.routeName: (ctx) => OrderDetailPage(),
             CreateorderPage.routeName: (ctx) => CreateorderPage(),
             CreateorderNewPage.routeName: (ctx) => CreateorderNewPage(),
+            CreateorderNewPosPage.routeName: (ctx) => CreateorderNewPosPage(),
             CreateorderBootPage.routeName: (ctx) => CreateorderBootPage(),
             PaymentPage.routeName: (ctx) => PaymentPage(),
             CarloadReviewPage.routeName: (ctx) => CarloadReviewPage(),

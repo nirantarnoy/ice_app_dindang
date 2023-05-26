@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 //import 'package:blue_thermal_printer_example/testprint.dart';
@@ -5,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/services.dart';
+import 'package:ice_app_new/pages/blueprint_new.dart';
+import 'package:ice_app_new/pages/sunmi_print.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
@@ -149,9 +152,12 @@ class _BluePrintState extends State<BluePrintPage> {
                 style: TextStyle(fontSize: 8),
               )),
               Expanded(
-                  child: Text(
-                'รวม',
-                style: TextStyle(fontSize: 8),
+                  child: Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  'รวม',
+                  style: TextStyle(fontSize: 8),
+                ),
               ))
             ],
           ),
@@ -177,9 +183,12 @@ class _BluePrintState extends State<BluePrintPage> {
                 style: TextStyle(fontSize: 8),
               )),
               Expanded(
-                  child: Text(
-                '100',
-                style: TextStyle(fontSize: 8),
+                  child: Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  '100',
+                  style: TextStyle(fontSize: 8),
+                ),
               ))
             ],
           ),
@@ -240,8 +249,9 @@ class _BluePrintState extends State<BluePrintPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[
-                        RaisedButton(
-                          color: Colors.blue,
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue[700]),
                           onPressed: () {
                             initPlatformState();
                           },
@@ -253,8 +263,10 @@ class _BluePrintState extends State<BluePrintPage> {
                         SizedBox(
                           width: 20,
                         ),
-                        RaisedButton(
-                          color: _connected ? Colors.red : Colors.green,
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  _connected ? Colors.red : Colors.green),
                           onPressed: _connected ? _disconnect : _connect,
                           child: Text(
                             _connected ? 'Disconnect' : 'Connect',
@@ -266,8 +278,9 @@ class _BluePrintState extends State<BluePrintPage> {
                     Padding(
                       padding: const EdgeInsets.only(
                           left: 10.0, right: 10.0, top: 50),
-                      child: RaisedButton(
-                        color: Colors.blue[700],
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue[700]),
                         onPressed: () {
                           // testPrint.sample(pathImage);
                           _connected ? _testPrint() : print('not connect');
@@ -276,7 +289,7 @@ class _BluePrintState extends State<BluePrintPage> {
                             style: TextStyle(color: Colors.white)),
                       ),
                     ),
-                    RaisedButton(
+                    ElevatedButton(
                       child: Text('Print Screensort'),
                       onPressed: () async {
                         final image = await screenshotController
@@ -284,10 +297,22 @@ class _BluePrintState extends State<BluePrintPage> {
                         if (image == null) {
                           print('no screenshort');
                         } else {
-                          print('have screenshort');
+                          print('have screenshort is ${image}');
                           await printImage(image);
                         }
                       },
+                    ),
+                    ElevatedButton(
+                      child: Text('Print New'),
+                      onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BlueprintNewPage())),
+                    ),
+                    ElevatedButton(
+                      child: Text('Sunmi Print'),
+                      onPressed: () => Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => SunmiPage())),
                     ),
                   ],
                 ),
@@ -348,20 +373,21 @@ class _BluePrintState extends State<BluePrintPage> {
     // 1- ESC_ALIGN_CENTER
     // 2- ESC_ALIGN_RIGHT
     bluetooth.isConnected.then((isConnected) {
+      // var x = utf8.encode("PB แพ็คใหญ่");
       if (isConnected) {
         bluetooth.printCustom("Ice", 3, 1);
-        bluetooth.printNewLine();
-        bluetooth.printLeftRight("No: 001", "Date: 08/06/2021", 1);
-        bluetooth.printLeftRight("Time: 21:45", "", 1);
-        bluetooth.printNewLine();
+        bluetooth.printLeftRight("OrderNo: SO23000001", "Date: 07/05/2023", 1);
+        bluetooth.print3Column("Cust: AAA", "", "Time: 21:45", 1);
         bluetooth.printCustom("-----------------------------------", 1, 1);
-        bluetooth.printLeftRight("Items", "Qty", 1);
+        bluetooth.print3Column("Items", "Qty", "Price", 1);
         bluetooth.printCustom("-----------------------------------", 1, 1);
-        bluetooth.printLeftRight("PB", "1", 1);
-        bluetooth.printLeftRight("PC", "4", 1);
-        bluetooth.printLeftRight("M", "3", 1);
+        bluetooth.print3Column('PB แพ็คใหญ่', "1", "1", 1, charset: 'TIS620');
+        bluetooth.print3Column("PC เล็ก", "4", "2", 1, charset: 'TIS620');
+        bluetooth.print3Column("M โม่", "3", "3", 1, charset: 'UTF-8');
         bluetooth.printCustom("-----------------------------------", 1, 1);
-        bluetooth.printLeftRight("TOTAL", "8", 3);
+        bluetooth.print3Column("TOTAL", "8", "8", 1);
+        bluetooth.printQRcode("SO00001", 125, 125, 1);
+
         // bluetooth.printImage(pathImage);
         // bluetooth.printCustom("Body left", 1, 0);
         // bluetooth.printCustom("Body right", 1, 2);
@@ -444,7 +470,7 @@ class _BluePrintState extends State<BluePrintPage> {
     Duration duration: const Duration(seconds: 3),
   }) async {
     await new Future.delayed(new Duration(milliseconds: 100));
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       new SnackBar(
         content: new Text(
           message,

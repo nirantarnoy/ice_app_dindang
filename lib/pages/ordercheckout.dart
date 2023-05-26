@@ -9,9 +9,15 @@ import 'package:ice_app_new/pages/ordersuccess.dart';
 //import 'package:ice_app_new/pages/paymentsuccess.dart';
 import 'package:ice_app_new/providers/order.dart';
 import 'package:ice_app_new/providers/user.dart';
+import 'package:ice_app_new/widgets/order/order_item.dart';
 //import 'package:ice_app_new/providers/paymentreceive.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sunmi_printer_plus/enums.dart';
+import 'package:sunmi_printer_plus/sunmi_printer_plus.dart';
+import 'package:barcode_widget/barcode_widget.dart' as qrCode;
 
 class OrdercheckoutPage extends StatefulWidget {
   static const routeName = '/ordercheckout';
@@ -20,11 +26,56 @@ class OrdercheckoutPage extends StatefulWidget {
 }
 
 class _OrdercheckoutPageState extends State<OrdercheckoutPage> {
+  final ScreenshotController screenshotController = ScreenshotController();
   final DateFormat dateformatter = DateFormat('dd-MM-yyyy');
+  final DateFormat datetimeformatter = DateFormat('dd-MM-yyyy HH:mm:ss');
   var formatter = NumberFormat('#,##,##0');
   Paytype _paytype = Paytype.Cash;
   DateTime _date = DateTime.now();
   int _discount_amt = 0;
+
+  //sunmi
+  bool printBinded = false;
+  int paperSize = 0;
+  String serialNumber = "";
+  String printerVersion = "";
+
+// end
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _bindingPrinter().then((bool isBind) async {
+      SunmiPrinter.paperSize().then((int size) {
+        setState(() {
+          paperSize = size;
+        });
+      });
+
+      SunmiPrinter.printerVersion().then((String version) {
+        setState(() {
+          printerVersion = version;
+        });
+      });
+
+      SunmiPrinter.serialNumber().then((String serial) {
+        setState(() {
+          serialNumber = serial;
+        });
+      });
+
+      setState(() {
+        printBinded = isBind;
+      });
+    });
+  }
+
+  /// must binding ur printer at first init in app
+  Future<bool> _bindingPrinter() async {
+    final bool result = await SunmiPrinter.bindingPrinter();
+    return result;
+  }
 
   Widget _buildList(List<Addorder> itemlist) {
     Widget orderCards;
@@ -60,13 +111,13 @@ class _OrdercheckoutPageState extends State<OrdercheckoutPage> {
                         title: Text('แจ้งเตือน'),
                         content: Text('ต้องการลบข้อมูลใช่หรือไม่'),
                         actions: <Widget>[
-                          FlatButton(
+                          ElevatedButton(
                             onPressed: () {
                               Navigator.of(context).pop(true);
                             },
                             child: Text('ยืนยัน'),
                           ),
-                          FlatButton(
+                          ElevatedButton(
                             onPressed: () {
                               Navigator.of(context).pop(false);
                             },
@@ -89,7 +140,7 @@ class _OrdercheckoutPageState extends State<OrdercheckoutPage> {
                       itemlist.removeAt(index);
                     });
 
-                    Scaffold.of(context).showSnackBar(SnackBar(
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Row(
                         children: <Widget>[
                           Icon(
@@ -252,12 +303,14 @@ class _OrdercheckoutPageState extends State<OrdercheckoutPage> {
                       child: SizedBox(
                         height: 55.0,
                         width: targetWidth,
-                        child: new RaisedButton(
-                            elevation: 5,
-                            splashColor: Colors.grey,
-                            shape: new RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(15.0)),
-                            color: Colors.blue[500],
+                        child: new ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue[500],
+                              elevation: 5,
+                              shape: new RoundedRectangleBorder(
+                                  borderRadius:
+                                      new BorderRadius.circular(15.0)),
+                            ),
                             child: new Text('ตกลง',
                                 style: new TextStyle(
                                     fontSize: 20.0, color: Colors.white)),
@@ -278,7 +331,7 @@ class _OrdercheckoutPageState extends State<OrdercheckoutPage> {
         });
   }
 
-  void _submitForm(String _customer_id, List<Addorder> listitems,
+  void _submitForm2(String _customer_id, List<Addorder> listitems,
       String pay_type, String discount) async {
     // Provider.of<OrderData>(context, listen: false)
     //     .addOrderNew(_customer_id, listitems, pay_type)
@@ -315,8 +368,11 @@ class _OrdercheckoutPageState extends State<OrdercheckoutPage> {
       },
     );
     bool issave = await Provider.of<OrderData>(context, listen: false)
-        .addOrderNew(_customer_id, listitems, pay_type, discount);
+        .addOrderNewPos(_customer_id, listitems, pay_type, discount);
     if (issave == true) {
+      if (printBinded == true) {
+        printTicketFromSunmi(listitems);
+      }
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -606,10 +662,10 @@ class _OrdercheckoutPageState extends State<OrdercheckoutPage> {
                               content:
                                   Text('ต้องการบันทึกการชำระเงินใช่หรือไม่'),
                               actions: <Widget>[
-                                FlatButton(
+                                ElevatedButton(
                                   onPressed: () {
                                     //Navigator.of(context).pop(true);
-                                    _submitForm(
+                                    _submitForm2(
                                         order_items[0].customer_id,
                                         order_items,
                                         "1",
@@ -617,7 +673,7 @@ class _OrdercheckoutPageState extends State<OrdercheckoutPage> {
                                   },
                                   child: Text('ยืนยัน'),
                                 ),
-                                FlatButton(
+                                ElevatedButton(
                                   onPressed: () {
                                     Navigator.of(context).pop(false);
                                   },
@@ -676,10 +732,10 @@ class _OrdercheckoutPageState extends State<OrdercheckoutPage> {
                               content:
                                   Text('ต้องการบันทึกการชำระเงินใช่หรือไม่'),
                               actions: <Widget>[
-                                FlatButton(
+                                ElevatedButton(
                                   onPressed: () {
                                     //Navigator.of(context).pop(true);
-                                    _submitForm(
+                                    _submitForm2(
                                         order_items[0].customer_id,
                                         order_items,
                                         "2",
@@ -687,7 +743,7 @@ class _OrdercheckoutPageState extends State<OrdercheckoutPage> {
                                   },
                                   child: Text('ยืนยัน'),
                                 ),
-                                FlatButton(
+                                ElevatedButton(
                                   onPressed: () {
                                     Navigator.of(context).pop(false);
                                   },
@@ -746,10 +802,10 @@ class _OrdercheckoutPageState extends State<OrdercheckoutPage> {
                               content:
                                   Text('ต้องการบันทึกการชำระเงินใช่หรือไม่'),
                               actions: <Widget>[
-                                FlatButton(
+                                ElevatedButton(
                                   onPressed: () {
                                     //Navigator.of(context).pop(true);
-                                    _submitForm(
+                                    _submitForm2(
                                         order_items[0].customer_id,
                                         order_items,
                                         "3",
@@ -757,7 +813,7 @@ class _OrdercheckoutPageState extends State<OrdercheckoutPage> {
                                   },
                                   child: Text('ยืนยัน'),
                                 ),
-                                FlatButton(
+                                ElevatedButton(
                                   onPressed: () {
                                     Navigator.of(context).pop(false);
                                   },
@@ -791,5 +847,295 @@ class _OrdercheckoutPageState extends State<OrdercheckoutPage> {
         )),
       ),
     );
+  }
+
+  void printTicketFromSunmi(List<Addorder> order_items) async {
+    double total_qty = 0;
+    double total_amt = 0;
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String emp_name = prefs.getString('emp_name');
+    screenshotController
+        .captureFromWidget(
+      Container(
+        // width: 250,
+        // height: 280,
+        color: Colors.white,
+        width: 193,
+        height: 250,
+        child: Column(
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: qrCode.BarcodeWidget(
+                      barcode: qrCode.Barcode.qrCode(
+                        errorCorrectLevel: qrCode.BarcodeQRCorrectionLevel.high,
+                      ),
+                      data: 'SO23000001',
+                      width: 50,
+                      height: 50,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    'น้ำแข็ง',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Row(
+              children: <Widget>[
+                Expanded(
+                    child: Text(
+                  'เลขที่ SO210001',
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: Colors.black,
+                  ),
+                )),
+                Expanded(
+                    child: Text(
+                  'วันที่ ${datetimeformatter.format(DateTime.now().toLocal())}',
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: Colors.black,
+                  ),
+                ))
+              ],
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Row(
+              children: <Widget>[
+                Expanded(
+                    child: Text(
+                  'ลูกค้า ${order_items[0].customer_name}',
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: Colors.black,
+                  ),
+                ))
+              ],
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    flex: 3,
+                    child: Text(
+                      'รายการ',
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                      flex: 1,
+                      child: Text(
+                        'จำนวน',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.black,
+                        ),
+                      )),
+                  Expanded(
+                      flex: 1,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          'ราคา',
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.black,
+                          ),
+                        ),
+                      )),
+                  Expanded(
+                      flex: 1,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          'รวม',
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ))
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(1.0),
+              child: order_items.length == 0
+                  ? Text('')
+                  : ListView.builder(
+                      itemCount: order_items.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        total_qty =
+                            total_qty + double.parse(order_items[index].qty);
+                        total_amt = total_amt +
+                            (double.parse(order_items[index].qty) *
+                                double.parse(order_items[index].sale_price));
+                        return Padding(
+                          padding: const EdgeInsets.all(1.0),
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                flex: 3,
+                                child: Text(
+                                  '${order_items[index].product_code} ${order_items[index].product_name}',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                  flex: 1,
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Text(
+                                      '${order_items[index].qty}',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  )),
+                              Expanded(
+                                  flex: 1,
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Text(
+                                      '${order_items[index].sale_price}',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  )),
+                              Expanded(
+                                  flex: 1,
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Text(
+                                      '${formatter.format(double.parse(order_items[index].qty) * double.parse(order_items[index].sale_price))}',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ))
+                            ],
+                          ),
+                        );
+                      }),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(1.0),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    flex: 3,
+                    child: Text(
+                      'รวมจำนวน',
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                      flex: 1,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          '${total_qty}',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      )),
+                  Expanded(
+                      flex: 1,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          '',
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.black,
+                          ),
+                        ),
+                      )),
+                  Expanded(
+                      flex: 1,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          '${formatter.format(total_amt)}',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ))
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            Row(
+              children: <Widget>[
+                Expanded(
+                    child: Text(
+                  'แคชเชียร์.....${emp_name}.....',
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: Colors.black,
+                  ),
+                ))
+              ],
+            ),
+          ],
+        ),
+      ),
+      delay: Duration(milliseconds: 30),
+    )
+        .then((capturedImage) async {
+      print('byte uint8list is ${capturedImage}');
+      await SunmiPrinter.initPrinter();
+      await SunmiPrinter.setAlignment(SunmiPrintAlign.CENTER);
+      await SunmiPrinter.startTransactionPrint(true);
+      await SunmiPrinter.printImage(capturedImage);
+      await SunmiPrinter.lineWrap(2);
+      await SunmiPrinter.exitTransactionPrint(true);
+    });
   }
 }

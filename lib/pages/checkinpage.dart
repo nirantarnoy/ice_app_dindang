@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:ice_app_new/pages/auth.dart';
+import 'package:ice_app_new/pages/auth_pos.dart';
 
 import 'package:provider/provider.dart';
 
@@ -52,18 +53,18 @@ class _CheckinPageState extends State<CheckinPage> {
 
   Widget _showLogo() {
     return new Hero(
-      tag: 'vorapat ice',
+      tag: 'bp ice',
       child: Padding(
         padding: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 0.0),
         child: CircleAvatar(
           backgroundColor: Colors.transparent,
           radius: 70.0,
-          child: Image.asset('assets/VP.png'),
-          // child: Text('ICE',
-          //     style: TextStyle(
-          //         fontSize: 38.0,
-          //         fontWeight: FontWeight.bold,
-          //         color: Colors.white)),
+          // child: Image.asset('assets/VP.png'),
+          child: Text('BP ICE',
+              style: TextStyle(
+                  fontSize: 38.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white)),
         ),
       ),
     );
@@ -132,7 +133,7 @@ class _CheckinPageState extends State<CheckinPage> {
                       fontWeight: FontWeight.bold, color: Colors.red)),
               content: Text('ข้อมูลไม่ครบถ้วนหรือไม่ถูกต้อง'),
               actions: <Widget>[
-                FlatButton(
+                ElevatedButton(
                   child: Text('ตกลง',
                       style: TextStyle(
                           fontWeight: FontWeight.bold, color: Colors.red)),
@@ -155,7 +156,7 @@ class _CheckinPageState extends State<CheckinPage> {
                     TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
             content: Text('กรุณาสแกนรหัสรถใหม่ที่ขึ้นต้นด้วย CAR หรือ BTC'),
             actions: <Widget>[
-              FlatButton(
+              ElevatedButton(
                 child: Text('ตกลง',
                     style: TextStyle(
                         fontWeight: FontWeight.bold, color: Colors.red)),
@@ -189,9 +190,9 @@ class _CheckinPageState extends State<CheckinPage> {
       //   ),
       // ),
       body: Container(
-        decoration: BoxDecoration(
-          image: _buildBackgroundImage(),
-        ),
+        // decoration: BoxDecoration(
+        //   image: _buildBackgroundImage(),
+        // ),
         padding: EdgeInsets.all(5.0),
         child: Center(
           child: SingleChildScrollView(
@@ -203,12 +204,12 @@ class _CheckinPageState extends State<CheckinPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
                     children: <Widget>[
-                      _showLogo(),
-                      // Text('VP ICE',
-                      //     style: TextStyle(
-                      //         fontSize: 50,
-                      //         fontWeight: FontWeight.bold,
-                      //         color: Colors.blue[700])),
+                      //_showLogo(),
+                      Text('BP ICE',
+                          style: TextStyle(
+                              fontSize: 50,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue[700])),
 
                       Text(
                         'สแกนข้อมูลให้ครบถ้วนตามลำดับ',
@@ -322,13 +323,14 @@ class _CheckinPageState extends State<CheckinPage> {
                               child: SizedBox(
                                 height: 45.0,
                                 width: targetWidth,
-                                child: new RaisedButton(
-                                    elevation: 5,
-                                    splashColor: Colors.grey,
-                                    shape: new RoundedRectangleBorder(
-                                        borderRadius:
-                                            new BorderRadius.circular(5.0)),
-                                    color: Colors.blue[700],
+                                child: new ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.blue[700],
+                                      elevation: 0.2,
+                                      shape: new RoundedRectangleBorder(
+                                          borderRadius:
+                                              new BorderRadius.circular(5.0)),
+                                    ),
                                     child: new Text(
                                         is_car_scan == false
                                             ? 'สแกนรถ'
@@ -354,13 +356,14 @@ class _CheckinPageState extends State<CheckinPage> {
                               child: SizedBox(
                                 height: 45.0,
                                 width: targetWidth,
-                                child: new RaisedButton(
-                                    elevation: 5,
-                                    splashColor: Colors.grey,
-                                    shape: new RoundedRectangleBorder(
-                                        borderRadius:
-                                            new BorderRadius.circular(5.0)),
-                                    color: Colors.grey[700],
+                                child: new ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.grey,
+                                      elevation: 5,
+                                      shape: new RoundedRectangleBorder(
+                                          borderRadius:
+                                              new BorderRadius.circular(5.0)),
+                                    ),
                                     child: new Text('ล้างข้อมูล',
                                         style: new TextStyle(
                                             fontSize: 20.0,
@@ -388,13 +391,14 @@ class _CheckinPageState extends State<CheckinPage> {
                               child: SizedBox(
                                 height: 45.0,
                                 width: targetWidth,
-                                child: new RaisedButton(
-                                    elevation: 5,
-                                    splashColor: Colors.grey,
-                                    shape: new RoundedRectangleBorder(
-                                        borderRadius:
-                                            new BorderRadius.circular(5.0)),
-                                    color: Colors.green[700],
+                                child: new ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.green[700],
+                                      elevation: 5,
+                                      shape: new RoundedRectangleBorder(
+                                          borderRadius:
+                                              new BorderRadius.circular(5.0)),
+                                    ),
                                     child: new Text('เข้าใช้งาน',
                                         style: new TextStyle(
                                             fontSize: 20.0,
@@ -408,16 +412,16 @@ class _CheckinPageState extends State<CheckinPage> {
                       SizedBox(
                         height: 10.0,
                       ),
-                      FlatButton(
+                      ElevatedButton(
                           onPressed: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => AuthPage()));
+                                    builder: (context) => AuthPosPage()));
                           },
                           child: Text(
                             'เข้าระบบด้วยรหัสผ่าน',
-                            style: TextStyle(color: Colors.green),
+                            style: TextStyle(color: Colors.white),
                           )),
                       SizedBox(height: 5),
                       Row(
@@ -426,7 +430,7 @@ class _CheckinPageState extends State<CheckinPage> {
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[Text('update 04-09-2022')],
+                        children: <Widget>[Text('update 27-09-2022')],
                       )
                     ],
                   ),

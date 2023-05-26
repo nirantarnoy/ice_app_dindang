@@ -15,29 +15,32 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomerData with ChangeNotifier {
   final String url_to_customer_list =
-      //  "http://192.168.1.120/icesystem/frontend/web/api/customer/list";
-      "http://103.253.73.108/icesystem/frontend/web/api/customer/list";
-  //"http://103.253.73.108/icesystem/frontend/web/api/customer/list";
+      //  "http://192.168.1.120/icesystembp/frontend/web/api/customer/list";
+      "http://141.98.16.4/icesystembp/frontend/web/api/customer/list";
+  //"http://141.98.16.4/icesystembp/frontend/web/api/customer/list";
   final String url_to_customer_boot_list =
-      //  "http://192.168.1.120/icesystem/frontend/web/api/customer/list";
-      "http://103.253.73.108/icesystem/frontend/web/api/customer/bootlist";
-  //"http://103.253.73.108/icesystem/frontend/web/api/customer/list";
+      //  "http://192.168.1.120/icesystembp/frontend/web/api/customer/list";
+      "http://141.98.16.4/icesystembp/frontend/web/api/customer/bootlist";
+  final String url_to_customer_pos_list =
+      //  "http://192.168.1.120/icesystembp/frontend/web/api/customer/list";
+      "http://141.98.16.4/icesystembp/frontend/web/api/customer/poslist";
+  //"http://141.98.16.4/icesystembp/frontend/web/api/customer/list";
   final String url_to_customer_detail =
-      // "http://203.203.1.224/icesystem/frontend/web/api/product/detail";
-      "http://103.253.73.108/icesystem/frontend/web/api/customer/detail";
+      // "http://203.203.1.224/icesystembp/frontend/web/api/product/detail";
+      "http://141.98.16.4/icesystembp/frontend/web/api/customer/detail";
 
   final String url_to_customer_asset =
-      // "http://203.203.1.224/icesystem/frontend/web/api/product/detail";
-      "http://103.253.73.108/icesystem/frontend/web/api/customer/assetlist";
+      // "http://203.203.1.224/icesystembp/frontend/web/api/product/detail";
+      "http://141.98.16.4/icesystembp/frontend/web/api/customer/assetlist";
   final String url_to_asset_change_photo =
-      // "http://203.203.1.224/icesystem/frontend/web/api/product/detail";
-      "http://103.253.73.108/icesystem/frontend/web/api/customer/updatephoto";
+      // "http://203.203.1.224/icesystembp/frontend/web/api/product/detail";
+      "http://141.98.16.4/icesystembp/frontend/web/api/customer/updatephoto";
   final String url_to_asset_checklist_save =
-      // "http://203.203.1.224/icesystem/frontend/web/api/product/detail";
-      "http://103.253.73.108/icesystem/frontend/web/api/customer/assetchecklist";
+      // "http://203.203.1.224/icesystembp/frontend/web/api/product/detail";
+      "http://141.98.16.4/icesystembp/frontend/web/api/customer/assetchecklist";
   final String url_to_asset_checklist =
-      // "http://203.203.1.224/icesystem/frontend/web/api/product/detail";
-      "http://103.253.73.108/icesystem/frontend/web/api/customer/checklist";
+      // "http://203.203.1.224/icesystembp/frontend/web/api/product/detail";
+      "http://141.98.16.4/icesystembp/frontend/web/api/customer/checklist";
 
   List<Customers> _customer;
   List<CustomerAsset> _customer_asset;
@@ -131,6 +134,66 @@ class CustomerData with ChangeNotifier {
               code: res['data'][i]['code'].toString(),
               name: res['data'][i]['name'].toString(),
               route_id: res['data'][i]['route_id'].toString(),
+              route_name: '');
+
+          //  print('data from server is ${customerresult}');
+          data.add(customerresult);
+        }
+
+        listcustomer = data;
+        _isLoading = false;
+        notifyListeners();
+        return listcustomer;
+      }
+    } catch (_) {}
+  }
+
+  Future<dynamic> fetPosCustomers() async {
+    String _current_route_id = "";
+    String _company_id = "";
+    String _branch_id = "";
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getString('user_id') != null) {
+      _company_id = prefs.getString('company_id');
+      _branch_id = prefs.getString('branch_id');
+    }
+
+    final Map<String, dynamic> filterData = {
+      'company_id': _company_id,
+      'branch_id': _branch_id
+    };
+    // _isLoading = true;
+    notifyListeners();
+    try {
+      http.Response response;
+      response = await http.post(
+        Uri.parse(url_to_customer_pos_list),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(filterData),
+      );
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> res = json.decode(response.body);
+        List<Customers> data = [];
+        print('data customer length is ${res["data"].length}');
+        //    print('data server is ${res["data"]}');
+
+        if (res == null) {
+          _isLoading = false;
+          notifyListeners();
+          return;
+        }
+
+        for (var i = 0; i < res['data'].length; i++) {
+          // var product = Customers.fromJson(res[i]);
+          //print(res['data'][i]['code']);
+          // data.add(product);
+          final Customers customerresult = Customers(
+              id: res['data'][i]['id'].toString(),
+              code: res['data'][i]['code'].toString(),
+              name: res['data'][i]['name'].toString(),
+              route_id: '',
               route_name: '');
 
           //  print('data from server is ${customerresult}');

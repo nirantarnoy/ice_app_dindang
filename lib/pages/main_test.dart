@@ -17,6 +17,7 @@ import 'package:ice_app_new/pages/journalissue.dart';
 import 'package:ice_app_new/pages/offlinetest.dart';
 // import 'package:ice_app_new/pages/offlinetest.dart';
 import 'package:ice_app_new/pages/order_print.dart';
+import 'package:ice_app_new/pages/orderpos.dart';
 // import 'package:ice_app_new/pages/paymentsuccess.dart';
 import 'package:ice_app_new/pages/plan.dart';
 // import 'package:ice_app_new/pages/print_bluetooth.dart';
@@ -113,7 +114,7 @@ class _MainTest extends State<MainTest> with SingleTickerProviderStateMixin {
       }
       if (index == 2) {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => OrderPage()));
+            context, MaterialPageRoute(builder: (context) => OrderPosPage()));
         appTitle = 'รายการขายสินค้า';
         _currentIndex = 0;
       }

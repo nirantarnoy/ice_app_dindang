@@ -40,6 +40,15 @@ class _OrderItemNewState extends State<OrderItemNew> {
           // print('issue id is ${selectedIssue}');
         });
       });
+      Provider.of<CustomerData>(context, listen: false)
+          .fetPosCustomers()
+          .then((_) {
+        setState(() {
+          _isLoading = false;
+
+          // print('issue id is ${selectedIssue}');
+        });
+      });
     }
   }
 
@@ -121,72 +130,76 @@ class _OrderItemNewState extends State<OrderItemNew> {
                     // ),
                     // Text("บาท",
                     //     style: TextStyle(fontSize: 20, color: Colors.black87)),
-                    Expanded(
-                      child: Consumer<CustomerData>(
-                        builder: (context, _customer, _) => TypeAheadField(
-                          textFieldConfiguration: TextFieldConfiguration(
-                            controller: _typeAheadController,
-                            autofocus: false,
-                            style: DefaultTextStyle.of(context)
-                                .style
-                                .copyWith(fontStyle: FontStyle.normal),
-                            decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'ค้นหาลูกค้า'),
-                          ),
-                          // suggestionsCallback: (pattern) async {
-                          //   return await BackendService.getSuggestions(pattern);
-                          // },
-                          suggestionsCallback: (pattern) async {
-                            return await _customer.findCustomer(pattern);
-                          },
-                          itemBuilder: (context, suggestion) {
-                            return ListTile(
-                              // leading: Icon(Icons.shopping_cart),
-                              title: Text(suggestion.name),
-                              // subtitle: Text('\$${suggestion['price']}'),
-                            );
-                          },
 
-                          onSuggestionSelected: (items) {
-                            //print(items.id);
-                            if (_typeAheadController.value == '') {
-                              print('not selected');
-                            }
-                            setState(() {
-                              selectedValue = items.id;
-                              orders.searchBycustomer = selectedValue;
-                              OrderData getneworder = Provider.of<OrderData>(
-                                  context,
-                                  listen: false);
-                              getneworder.fetOrders();
-                              this._typeAheadController.text = items.name;
-                            });
-                          },
-                          noItemsFoundBuilder: (context) {
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Text(
-                                    'ไม่พบข้อมูล',
-                                    style: TextStyle(
-                                        fontSize: 16, color: Colors.red),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Consumer<CustomerData>(
+                          builder: (context, _customer, _) => TypeAheadField(
+                            textFieldConfiguration: TextFieldConfiguration(
+                              controller: _typeAheadController,
+                              autofocus: false,
+                              style: DefaultTextStyle.of(context)
+                                  .style
+                                  .copyWith(fontStyle: FontStyle.normal),
+                              decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  hintText: 'ค้นหาลูกค้า'),
+                            ),
+                            // suggestionsCallback: (pattern) async {
+                            //   return await BackendService.getSuggestions(pattern);
+                            // },
+                            suggestionsCallback: (pattern) async {
+                              return await _customer.findCustomer(pattern);
+                            },
+                            itemBuilder: (context, suggestion) {
+                              return ListTile(
+                                // leading: Icon(Icons.shopping_cart),
+                                title: Text(suggestion.name),
+                                // subtitle: Text('\$${suggestion['price']}'),
+                              );
+                            },
+
+                            onSuggestionSelected: (items) {
+                              //print(items.id);
+                              if (_typeAheadController.value == '') {
+                                print('not selected');
+                              }
+                              setState(() {
+                                selectedValue = items.id;
+                                orders.searchBycustomer = selectedValue;
+                                OrderData getneworder = Provider.of<OrderData>(
+                                    context,
+                                    listen: false);
+                                getneworder.fetOrders();
+                                this._typeAheadController.text = items.name;
+                              });
+                            },
+                            noItemsFoundBuilder: (context) {
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(
+                                      'ไม่พบข้อมูล',
+                                      style: TextStyle(
+                                          fontSize: 16, color: Colors.red),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ),
                     SizedBox(
                       width: 5,
                     ),
-                    FlatButton(
-                        color: Colors.grey[100],
-                        height: 30,
+                    ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey[100],
+                        ),
                         onPressed: () {
                           selectedValue = '';
                           orders.searchBycustomer = selectedValue;
@@ -208,7 +221,7 @@ class _OrderItemNewState extends State<OrderItemNew> {
                     //     onPressed: () => Navigator.of(context)
                     //         .pushNamed(CreateorderPage.routeName),
                     //     child: Icon(Icons.add, color: Colors.white)
-                    //     //   FlatButton(onPressed: () {}, child: Text("เพิ่มรายการขาย")),
+                    //     //   ElevatedButton(onPressed: () {}, child: Text("เพิ่มรายการขาย")),
                     //     ),
                   ]),
             ),
@@ -449,13 +462,13 @@ class _ItemsState extends State<Items> {
             title: Text('แจ้งเตือน'),
             content: Text('ต้องการลบข้อมูลใช่หรือไม่'),
             actions: <Widget>[
-              FlatButton(
+              ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pop(true);
                 },
                 child: Text('ยืนยัน'),
               ),
-              FlatButton(
+              ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pop(false);
                 },
@@ -472,7 +485,7 @@ class _ItemsState extends State<Items> {
               .removeOrderDetail(widget._order_line_id);
           widget._orders.removeAt(widget._index);
         });
-        Scaffold.of(context).showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Row(
             children: <Widget>[
               Icon(
@@ -505,7 +518,7 @@ class _ItemsState extends State<Items> {
         child: Column(
           children: <Widget>[
             ListTile(
-              // leading: RaisedButton(
+              // leading: ElevatedButton(
               //     color:
               //         _payment_method_id == "1" ? Colors.green : Colors.purple[300],
               //     onPressed: () {},

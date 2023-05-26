@@ -70,8 +70,8 @@ class _MyAppState extends State<MyApp> {
             theme: ThemeData(
                 brightness: Brightness.light,
                 primarySwatch: Colors.lightBlue,
-                accentColor: Colors.lightBlue,
-                buttonColor: Colors.blue,
+                // accentColor: Colors.lightBlue,
+                // buttonColor: Colors.blue,
                 fontFamily: 'Kanit-Regular'),
             home: users.is_authenuser ? MainTest() : AuthPage(),
             // routes: {

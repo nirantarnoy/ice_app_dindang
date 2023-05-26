@@ -120,7 +120,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             title: Text(title),
             content: Text(text),
             actions: <Widget>[
-              FlatButton(
+              ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -131,11 +131,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _buildclosebutton() {
-    return RaisedButton(
-        elevation: 5,
-        shape: new RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(10.0)),
-        color: Colors.blue,
+    return ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.blue,
+          elevation: 5,
+          shape: new RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(10.0)),
+        ),
         child: new Text('จบการขาย',
             style: new TextStyle(fontSize: 20.0, color: Colors.white)),
         onPressed: () {
@@ -329,7 +331,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           //     title: Text('ยืนยัน'),
           //     content: Text('ต้องการส่งข้อมูลการขายประจำวันใช่หรือไม่'),
           //     actions: <Widget>[
-          //       FlatButton(
+          //       ElevatedButton(
           //         onPressed: () async {
           //           bool res =
           //               await Provider.of<OrderData>(context, listen: false)
@@ -361,7 +363,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           //         },
           //         child: Text('ยืนยัน'),
           //       ),
-          //       FlatButton(
+          //       ElevatedButton(
           //         onPressed: () {
           //           Navigator.of(context).pop(false);
           //         },
@@ -845,13 +847,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         ? Padding(
                                             padding: EdgeInsets.fromLTRB(
                                                 0.0, 35.0, 10.0, 0.0),
-                                            child: RaisedButton(
-                                              elevation: 5,
-                                              shape: new RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      new BorderRadius.circular(
-                                                          10.0)),
-                                              color: Colors.grey,
+                                            child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colors.grey,
+                                                elevation: 5,
+                                                shape:
+                                                    new RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            new BorderRadius
+                                                                    .circular(
+                                                                10.0)),
+                                              ),
                                               child: Text(
                                                 'ส่งมอบขาย OFFLINE',
                                                 style: TextStyle(

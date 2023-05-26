@@ -7,44 +7,55 @@ import 'package:ice_app_new/models/order_discount.dart';
 import 'package:ice_app_new/models/orders.dart';
 import 'package:ice_app_new/models/order_detail.dart';
 import 'package:ice_app_new/models/orders_new.dart';
+import 'package:ice_app_new/models/productpos.dart';
 import 'package:ice_app_new/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OrderData with ChangeNotifier {
   final String server_api = "";
   final String url_to_order =
-      //   "http://192.168.1.120/icesystem/frontend/web/api/order/list";
-      "http://103.253.73.108/icesystem/frontend/web/api/order/listnew";
+      //   "http://192.168.1.120/icesystembp/frontend/web/api/order/list";
+      "http://141.98.16.4/icesystembp/frontend/web/api/order/listnew";
+  final String url_to_order_pos =
+      //   "http://192.168.1.120/icesystembp/frontend/web/api/order/list";
+      "http://141.98.16.4/icesystembp/frontend/web/api/order/listnewpos";
   final String url_to_order_detail =
-      //   "http://192.168.1.120/icesystem/frontend/web/api/order/listbycustomer";
-      "http://103.253.73.108/icesystem/frontend/web/api/order/listbycustomer";
+      //   "http://192.168.1.120/icesystembp/frontend/web/api/order/listbycustomer";
+      "http://141.98.16.4/icesystembp/frontend/web/api/order/listbycustomer";
   final String url_to_order_discount =
-      //   "http://192.168.1.120/icesystem/frontend/web/api/order/listbycustomer";
-      "http://103.253.73.108/icesystem/frontend/web/api/order/orderdiscount";
+      //   "http://192.168.1.120/icesystembp/frontend/web/api/order/listbycustomer";
+      "http://141.98.16.4/icesystembp/frontend/web/api/order/orderdiscount";
   final String url_to_add_order =
-      "http://103.253.73.108/icesystem/frontend/web/api/order/addorder";
+      "http://141.98.16.4/icesystembp/frontend/web/api/order/addorder";
   final String url_to_add_order_new =
-      "http://103.253.73.108/icesystem/frontend/web/api/order/addordernew";
-  // "http://192.168.1.120/icesystem/frontend/web/api/order/addorder";
+      "http://141.98.16.4/icesystembp/frontend/web/api/order/addordernew";
+  // "http://192.168.1.120/icesystembp/frontend/web/api/order/addorder";
+  final String url_to_add_order_new_pos =
+      "http://141.98.16.4/icesystembp/frontend/web/api/order/addordernewpos";
+  // "http://192.168.1.120/icesystembp/frontend/web/api/order/addorder";
   final String url_to_add_order_transfer =
-      "http://103.253.73.108/icesystem/frontend/web/api/order/addordertransfer";
-  // "http://192.168.1.120/icesystem/frontend/web/api/order/addorder";
+      "http://141.98.16.4/icesystembp/frontend/web/api/order/addordertransfer";
+  // "http://192.168.1.120/icesystembp/frontend/web/api/order/addorder";
   final String url_to_update_order =
-      "http://103.253.73.108/icesystem/frontend/web/api/order/updateorder";
-  //   "http://192.168.1.120/icesystem/frontend/web/api/order/updateorder";
+      "http://141.98.16.4/icesystembp/frontend/web/api/order/updateorder";
+  //   "http://192.168.1.120/icesystembp/frontend/web/api/order/updateorder";
   final String url_to_delete_order_customer =
-      //    "http://192.168.1.120/icesystem/frontend/web/api/order/deleteorder";
-      "http://103.253.73.108/icesystem/frontend/web/api/order/deleteordercustomer";
+      //    "http://192.168.1.120/icesystembp/frontend/web/api/order/deleteorder";
+      "http://141.98.16.4/icesystembp/frontend/web/api/order/deleteordercustomer";
   final String url_to_update_order_detail =
-      //   "http://192.168.1.120/icesystem/frontend/web/api/order/updateorderdetail";
-      "http://103.253.73.108/icesystem/frontend/web/api/order/updateorderdetail";
+      //   "http://192.168.1.120/icesystembp/frontend/web/api/order/updateorderdetail";
+      "http://141.98.16.4/icesystembp/frontend/web/api/order/updateorderdetail";
   final String url_to_delete_order_detail =
-      "http://103.253.73.108/icesystem/frontend/web/api/order/deleteorderline";
+      "http://141.98.16.4/icesystembp/frontend/web/api/order/deleteorderline";
   final String url_to_close_order =
-      "http://103.253.73.108/icesystem/frontend/web/api/order/closeorder";
+      "http://141.98.16.4/icesystembp/frontend/web/api/order/closeorder";
   final String url_to_cancel_order =
-      "http://103.253.73.108/icesystem/frontend/web/api/order/cancelorder";
-  //  "http://192.168.1.120/icesystem/frontend/web/api/order/deleteorderline";
+      "http://141.98.16.4/icesystembp/frontend/web/api/order/cancelorder";
+  //  "http://192.168.1.120/icesystembp/frontend/web/api/order/deleteorderline";
+  final String url_to_get_product_pos =
+      "http://141.98.16.4/icesystembp/frontend/web/api/order/getoriginprice";
+  final String url_to_get_product_pos_by_customer =
+      "http://141.98.16.4/icesystembp/frontend/web/api/order/getcustomerposprice";
 
   ///// for common
   bool _isLoading = false;
@@ -63,6 +74,9 @@ class OrderData with ChangeNotifier {
   List<OrderDiscount> _order_discount;
   List<OrderDiscount> get listorder_discount => _order_discount;
 
+  List<ProductPos> _productpos;
+  List<ProductPos> get listproductpos => _productpos;
+
   int get idOrder => _id;
 
   set idOrder(int val) {
@@ -80,6 +94,11 @@ class OrderData with ChangeNotifier {
 
   set searchBycustomer(String val) {
     _searchbycustomer = val;
+    notifyListeners();
+  }
+
+  set listproductpos(List<ProductPos> val) {
+    _productpos = val;
     notifyListeners();
   }
 
@@ -290,6 +309,80 @@ class OrderData with ChangeNotifier {
         _isLoading = false;
         _isApicon = true;
         notifyListeners();
+        return listorder;
+      }
+    } catch (_) {
+      _isApicon = false;
+      print('order cannot fetch data');
+    }
+  }
+
+  Future<dynamic> fetPosOrders() async {
+    String _user_id;
+    String _order_date = new DateTime.now().toString();
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getString('user_id') != null) {
+      _user_id = prefs.getString('user_id');
+    }
+    final Map<String, dynamic> filterData = {
+      'user_id': _user_id,
+      'order_date': _order_date,
+      'searchcustomer': _searchbycustomer,
+    };
+    print('data fetch order is ${filterData}');
+    _isLoading = true;
+    notifyListeners();
+    try {
+      http.Response response;
+      response = await http.post(Uri.parse(url_to_order_pos),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode(filterData));
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> res = json.decode(response.body);
+        List<OrdersNew> data = [];
+        print('data length is ${res["data"].length}');
+        //  print('data is ${res["data"]}');
+
+        if (res == null) {
+          _isLoading = false;
+          notifyListeners();
+          return;
+        }
+
+        for (var i = 0; i < res['data'].length; i++) {
+          idOrder = int.parse(res['data'][i]['id'].toString());
+          final OrdersNew orderresult = OrdersNew(
+            id: res['data'][i]['id'].toString(),
+            order_no: res['data'][i]['order_no'].toString(),
+            order_date: res['data'][i]['order_date'].toString(),
+            customer_id: res['data'][i]['customer_id'].toString(),
+            customer_code: res['data'][i]['customer_code'].toString(),
+            customer_name: res['data'][i]['customer_name'].toString(),
+            price: res['data'][i]['price'].toString(),
+            qty: res['data'][i]['qty'].toString(),
+            line_total: res['data'][i]['line_total'].toString(),
+            payment_method_id:
+                res['data'][i]['sale_payment_method_id'].toString(),
+            product_id: res['data'][i]['product_id'].toString(),
+            product_code: res['data'][i]['product_code'].toString(),
+            product_name: res['data'][i]['product_name'].toString(),
+            order_line_id: res['data'][i]['order_line_id'].toString(),
+            order_line_date: res['data'][i]['order_line_date'].toString(),
+            order_line_status: res['data'][i]['order_line_status'].toString(),
+            // discount_amount: res['data'][i]['discount_amount'].toString(),
+          );
+
+          data.add(orderresult);
+        }
+
+        listorder = data;
+        _isLoading = false;
+        _isApicon = true;
+        notifyListeners();
+
+        print('data listorder length is ${listorder.length}');
         return listorder;
       }
     } catch (_) {
@@ -541,6 +634,76 @@ class OrderData with ChangeNotifier {
     return _iscomplated;
   }
 
+  Future<bool> addOrderNewPos(
+    String customer_id,
+    List<Addorder> listdata,
+    String pay_type,
+    String discount,
+  ) async {
+    String _user_id = "";
+    String _emp_id = "";
+    String _emp2_id = "";
+    String _route_id = "";
+    String _car_id = "";
+    String _company_id = "";
+    String _branch_id = "";
+
+    bool _iscomplated = false;
+
+    String _order_date = new DateTime.now().toString();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getString('user_id') != null) {
+      _user_id = prefs.getString('user_id');
+      _emp_id = prefs.getString('emp_id');
+      _emp2_id = prefs.getString('emp2_id');
+      _route_id = prefs.getString('emp_route_id');
+      _car_id = prefs.getString('emp_car_id');
+      _company_id = prefs.getString('company_id');
+      _branch_id = prefs.getString('branch_id');
+    }
+
+    var jsonx = listdata
+        .map((e) => {
+              'product_id': e.product_id,
+              'qty': e.qty,
+              'price': e.sale_price,
+              'price_group_id': e.price_group_id,
+            })
+        .toList();
+
+    final Map<String, dynamic> orderData = {
+      'payment_type_id': pay_type,
+      'order_date': _order_date,
+      'customer_id': customer_id,
+      'user_id': _user_id,
+      'emp_id': _emp_id,
+      'emp2_id': _emp2_id,
+      'route_id': _route_id,
+      'car_id': _car_id,
+      'company_id': _company_id,
+      'branch_id': _branch_id,
+      'data': jsonx,
+      'discount': discount,
+    };
+    print('data will save order pos new is ${orderData}');
+    try {
+      http.Response response;
+      response = await http.post(Uri.parse(url_to_add_order_new_pos),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode(orderData));
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> res = json.decode(response.body);
+        print('data added order is  ${res["data"]}');
+        _iscomplated = true;
+      }
+    } catch (_) {
+      _iscomplated = false;
+      // print('cannot create order');
+    }
+    return _iscomplated;
+  }
+
   Future<void> addOrderFromtransfer(
     String product_id,
     String qty,
@@ -776,5 +939,100 @@ class OrderData with ChangeNotifier {
     }
     print(completed);
     return completed;
+  }
+
+  Future<void> fetProductPos() async {
+    String _company_id = "";
+    String _branch_id = "";
+
+    String _order_date = new DateTime.now().toString();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getString('user_id') != null) {
+      _company_id = prefs.getString('company_id');
+      _branch_id = prefs.getString('branch_id');
+    }
+
+    final Map<String, dynamic> orderData = {
+      'company_id': _company_id,
+      'branch_id': _branch_id,
+    };
+    print("for get product pos is ${orderData}");
+    try {
+      http.Response response;
+      response = await http.post(Uri.parse(url_to_get_product_pos),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode(orderData));
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> res = json.decode(response.body);
+        print('data add order is  ${res["data"]}');
+        List<ProductPos> data = [];
+        if (res == null) {
+          _isLoading = false;
+          notifyListeners();
+          return null;
+        }
+        for (var i = 0; i < res['data'].length; i++) {
+          final ProductPos orderlineresult = new ProductPos(
+            id: res['data'][i]['product_id'].toString(),
+            code: res['data'][i]['code'].toString(),
+            name: res['data'][i]['code'].toString(),
+            saleprice: res['data'][i]['sale_price'].toString(),
+            onhand: res['data'][i]['onhand'].toString(),
+          );
+
+          data.add(orderlineresult);
+        }
+
+        listproductpos = data;
+        _isLoading = false;
+        notifyListeners();
+        return listproductpos;
+      }
+    } catch (_) {
+      print('cannot get pos product');
+    }
+  }
+
+  Future<void> fetProductPosByCustomer(String customer_id) async {
+    final Map<String, dynamic> orderData = {
+      'customer_id': customer_id,
+    };
+    print("for get product pos customer is ${orderData}");
+    try {
+      http.Response response;
+      response = await http.post(Uri.parse(url_to_get_product_pos_by_customer),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode(orderData));
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> res = json.decode(response.body);
+        print('data add order is  ${res["data"]}');
+        List<ProductPos> data = [];
+        if (res == null) {
+          _isLoading = false;
+          notifyListeners();
+          return null;
+        }
+        for (var i = 0; i < res['data'].length; i++) {
+          final ProductPos orderlineresult = new ProductPos(
+            id: res['data'][i]['product_id'].toString(),
+            code: res['data'][i]['code'].toString(),
+            name: res['data'][i]['code'].toString(),
+            saleprice: res['data'][i]['sale_price'].toString(),
+            onhand: res['data'][i]['onhand'].toString(),
+          );
+
+          data.add(orderlineresult);
+        }
+
+        listproductpos = data;
+        _isLoading = false;
+        notifyListeners();
+        return listproductpos;
+      }
+    } catch (_) {
+      print('cannot get pos product');
+    }
   }
 }
