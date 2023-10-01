@@ -8,14 +8,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 class DeliveryRouteData with ChangeNotifier {
   final String url_to_DeliveryRoute_list =
       //  "http://192.168.1.120/icesystembp/frontend/web/api/customer/list";
-      "http://141.98.16.4/icesystembp/frontend/web/api/customer/list";
-  //"http://141.98.16.4/icesystembp/frontend/web/api/customer/list";
+      "http://103.253.73.108/icesystemdindang/frontend/web/api/customer/list";
+  final String url_to_DeliveryRoute_all =
+      //  "http://192.168.1.120/icesystembp/frontend/web/api/customer/list";
+      "http://103.253.73.108/icesystemdindang/frontend/web/api/customer/routeall";
+  //"http://103.253.73.108/icesystemdindang/frontend/web/api/customer/list";
   final String url_to_DeliveryRoute_detail =
       // "http://203.203.1.224/icesystembp/frontend/web/api/product/detail";
-      "http://141.98.16.4/icesystembp/frontend/web/api/customer/detail";
+      "http://103.253.73.108/icesystemdindang/frontend/web/api/customer/detail";
 
   List<DeliveryRoute> _DeliveryRoute;
   List<DeliveryRoute> get listDeliveryRoute => _DeliveryRoute;
+  List<DeliveryRoute> _DeliveryRouteAll;
+  List<DeliveryRoute> get listDeliveryRouteAll => _DeliveryRouteAll;
   bool _isLoading = false;
   int _id = 0;
 
@@ -28,6 +33,11 @@ class DeliveryRouteData with ChangeNotifier {
 
   set listDeliveryRoute(List<DeliveryRoute> val) {
     _DeliveryRoute = val;
+    notifyListeners();
+  }
+
+  set listDeliveryRouteAll(List<DeliveryRoute> val) {
+    _DeliveryRouteAll = val;
     notifyListeners();
   }
 
@@ -90,6 +100,59 @@ class DeliveryRouteData with ChangeNotifier {
   Future<List> findDeliveryRoute(String query) async {
     await Future.delayed(Duration(microseconds: 500));
     return listDeliveryRoute
+        .where((item) => item.name.toLowerCase().contains(query))
+        .toList();
+  }
+
+  Future<dynamic> fethDeliveryRouteAll() async {
+    final Map<String, dynamic> filterData = {'route_id': 1};
+    // _isLoading = true;
+    notifyListeners();
+    try {
+      http.Response response;
+      response = await http.post(
+        Uri.parse(url_to_DeliveryRoute_all),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(filterData),
+      );
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> res = json.decode(response.body);
+        List<DeliveryRoute> data = [];
+        print('data customer length is ${res["data"].length}');
+        //    print('data server is ${res["data"]}');
+
+        if (res == null) {
+          _isLoading = false;
+          notifyListeners();
+          return;
+        }
+
+        for (var i = 0; i < res['data'].length; i++) {
+          // var product = DeliveryRoute.fromJson(res[i]);
+          //print(res['data'][i]['code']);
+          // data.add(product);
+          final DeliveryRoute routeresult = DeliveryRoute(
+            id: res['data'][i]['id'].toString(),
+            code: res['data'][i]['code'].toString(),
+            name: res['data'][i]['name'].toString(),
+          );
+
+          //  print('data from server is ${customerresult}');
+          data.add(routeresult);
+        }
+
+        listDeliveryRouteAll = data;
+        _isLoading = false;
+        notifyListeners();
+        return listDeliveryRouteAll;
+      }
+    } catch (_) {}
+  }
+
+  Future<List> findDeliveryRouteAll(String query) async {
+    await Future.delayed(Duration(microseconds: 500));
+    return listDeliveryRouteAll
         .where((item) => item.name.toLowerCase().contains(query))
         .toList();
   }

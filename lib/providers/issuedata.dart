@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:ice_app_new/models/addissuedata.dart';
 
 import 'package:ice_app_new/models/issueitems.dart';
 import 'package:ice_app_new/models/reviewload.dart';
@@ -10,16 +11,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class IssueData with ChangeNotifier {
   final String url_to_issue_list_open =
-      "http://141.98.16.4/icesystembp/frontend/web/api/journalissue/checkopen";
+      "http://103.253.73.108/icesystemdindang/frontend/web/api/journalissue/checkopen";
 
   final String url_to_issue_list =
-      "http://141.98.16.4/icesystembp/frontend/web/api/journalissue/list2";
+      "http://103.253.73.108/icesystemdindang/frontend/web/api/journalissue/list2";
   final String url_to_oldstockroute_list =
-      "http://141.98.16.4/icesystembp/frontend/web/api/journalissue/oldstockroute";
+      "http://103.253.73.108/icesystemdindang/frontend/web/api/journalissue/oldstockroute";
   final String url_to_user_confirm =
-      "http://141.98.16.4/icesystembp/frontend/web/api/journalissue/issueconfirm2";
+      "http://103.253.73.108/icesystemdindang/frontend/web/api/journalissue/issueconfirm2";
   final String url_to_user_confirm_cancel =
-      "http://141.98.16.4/icesystembp/frontend/web/api/journalissue/issueconfirmcancel";
+      "http://103.253.73.108/icesystemdindang/frontend/web/api/journalissue/issueconfirmcancel";
+
+  final String url_to_add_product_issue =
+      "http://103.253.73.108/icesystemdindang/frontend/web/api/journalissue/createissuebp";
 
   List<Issueitems> _issue;
   List<Issueitems> get listissue => _issue;
@@ -34,6 +38,9 @@ class IssueData with ChangeNotifier {
   List<TransferProduct> _transferProducts;
   List<TransferProduct> get transferproductitems => _transferProducts;
 
+  String _issueno_after_save = '';
+  String get issueno_after_save => _issueno_after_save;
+
   //int _avl_qty = 0;
   int _id = 0;
   int _transferouttotal = 0;
@@ -47,6 +54,10 @@ class IssueData with ChangeNotifier {
   set userconfirm(int val) {
     _user_confirm = val;
     notifyListeners();
+  }
+
+  set issueno_after_save(String order_no) {
+    _issueno_after_save = order_no;
   }
 
   set idIssue(int val) {
@@ -586,5 +597,64 @@ class IssueData with ChangeNotifier {
       _isApicon = false;
       print('cannot connect api.');
     }
+  }
+
+  Future<bool> addProductissue(
+    String route_id,
+    List<Addissuedata> listdata,
+  ) async {
+    String _user_id = "";
+    String _route_id = "";
+    String _company_id = "";
+    String _branch_id = "";
+
+    bool _iscomplated = false;
+
+    String _order_date = new DateTime.now().toString();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getString('user_id') != null) {
+      _user_id = prefs.getString('user_id');
+      //   _route_id = prefs.getString('emp_route_id');
+      _company_id = prefs.getString('company_id');
+      _branch_id = prefs.getString('branch_id');
+    }
+
+    var jsonx = listdata
+        .map((e) => {
+              'product_id': e.product_id,
+              'qty': e.qty,
+              'price': e.sale_price,
+            })
+        .toList();
+
+    final Map<String, dynamic> orderData = {
+      'order_date': _order_date,
+      'user_id': _user_id,
+      'route_id': route_id,
+      'company_id': _company_id,
+      'branch_id': _branch_id,
+      'data': jsonx,
+    };
+    print('data will save product issue is ${orderData}');
+    try {
+      http.Response response;
+      response = await http.post(Uri.parse(url_to_add_product_issue),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode(orderData));
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> res = json.decode(response.body);
+        print('data added product issue is  ${res["data"]}');
+        if (res != null) {
+          issueno_after_save = res["data"][0]["issue_no"];
+          print('${res["data"][0]["issue_no"]}');
+        }
+        _iscomplated = true;
+      }
+    } catch (_) {
+      _iscomplated = false;
+      // print('cannot create order');
+    }
+    return _iscomplated;
   }
 }

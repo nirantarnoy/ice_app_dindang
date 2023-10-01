@@ -16,36 +16,38 @@ import 'package:shared_preferences/shared_preferences.dart';
 class CustomerData with ChangeNotifier {
   final String url_to_customer_list =
       //  "http://192.168.1.120/icesystembp/frontend/web/api/customer/list";
-      "http://141.98.16.4/icesystembp/frontend/web/api/customer/list";
-  //"http://141.98.16.4/icesystembp/frontend/web/api/customer/list";
+      "http://103.253.73.108/icesystemdindang/frontend/web/api/customer/list";
+  //"http://103.253.73.108/icesystemdindang/frontend/web/api/customer/list";
   final String url_to_customer_boot_list =
       //  "http://192.168.1.120/icesystembp/frontend/web/api/customer/list";
-      "http://141.98.16.4/icesystembp/frontend/web/api/customer/bootlist";
+      "http://103.253.73.108/icesystemdindang/frontend/web/api/customer/bootlist";
   final String url_to_customer_pos_list =
       //  "http://192.168.1.120/icesystembp/frontend/web/api/customer/list";
-      "http://141.98.16.4/icesystembp/frontend/web/api/customer/poslist";
-  //"http://141.98.16.4/icesystembp/frontend/web/api/customer/list";
+      "http://103.253.73.108/icesystemdindang/frontend/web/api/customer/poslist";
+  //"http://103.253.73.108/icesystemdindang/frontend/web/api/customer/list";
   final String url_to_customer_detail =
       // "http://203.203.1.224/icesystembp/frontend/web/api/product/detail";
-      "http://141.98.16.4/icesystembp/frontend/web/api/customer/detail";
+      "http://103.253.73.108/icesystemdindang/frontend/web/api/customer/detail";
 
   final String url_to_customer_asset =
       // "http://203.203.1.224/icesystembp/frontend/web/api/product/detail";
-      "http://141.98.16.4/icesystembp/frontend/web/api/customer/assetlist";
+      "http://103.253.73.108/icesystemdindang/frontend/web/api/customer/assetlist";
   final String url_to_asset_change_photo =
       // "http://203.203.1.224/icesystembp/frontend/web/api/product/detail";
-      "http://141.98.16.4/icesystembp/frontend/web/api/customer/updatephoto";
+      "http://103.253.73.108/icesystemdindang/frontend/web/api/customer/updatephoto";
   final String url_to_asset_checklist_save =
       // "http://203.203.1.224/icesystembp/frontend/web/api/product/detail";
-      "http://141.98.16.4/icesystembp/frontend/web/api/customer/assetchecklist";
+      "http://103.253.73.108/icesystemdindang/frontend/web/api/customer/assetchecklist";
   final String url_to_asset_checklist =
       // "http://203.203.1.224/icesystembp/frontend/web/api/product/detail";
-      "http://141.98.16.4/icesystembp/frontend/web/api/customer/checklist";
+      "http://103.253.73.108/icesystemdindang/frontend/web/api/customer/checklist";
 
   List<Customers> _customer;
+  List<Customers> _customerpos;
   List<CustomerAsset> _customer_asset;
   List<Checklist> _assetchecklist;
   List<Customers> get listcustomer => _customer;
+  List<Customers> get listcustomerpos => _customerpos;
   List<CustomerAsset> get listcustomerasset => _customer_asset;
   List<Checklist> get listassetchecklist => _assetchecklist;
 
@@ -64,6 +66,11 @@ class CustomerData with ChangeNotifier {
 
   set listcustomer(List<Customers> val) {
     _customer = val;
+    notifyListeners();
+  }
+
+  set listcustomerpos(List<Customers> val) {
+    _customerpos = val;
     notifyListeners();
   }
 
@@ -200,10 +207,10 @@ class CustomerData with ChangeNotifier {
           data.add(customerresult);
         }
 
-        listcustomer = data;
+        listcustomerpos = data;
         _isLoading = false;
         notifyListeners();
-        return listcustomer;
+        return listcustomerpos;
       }
     } catch (_) {}
   }
@@ -211,6 +218,13 @@ class CustomerData with ChangeNotifier {
   Future<List> findCustomer(String query) async {
     await Future.delayed(Duration(microseconds: 500));
     return listcustomer
+        .where((item) => item.name.toLowerCase().contains(query))
+        .toList();
+  }
+
+  Future<List> findCustomerpos(String query) async {
+    await Future.delayed(Duration(microseconds: 500));
+    return listcustomerpos
         .where((item) => item.name.toLowerCase().contains(query))
         .toList();
   }

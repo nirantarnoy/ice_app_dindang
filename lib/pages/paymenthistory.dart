@@ -3,6 +3,7 @@ import 'package:ice_app_new/models/paymenthistory.dart';
 import 'package:ice_app_new/providers/paymentreceive.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PaymenthistoryPage extends StatefulWidget {
   static const routeName = '/paymenthistory';
@@ -11,16 +12,36 @@ class PaymenthistoryPage extends StatefulWidget {
 }
 
 class _PaymenthistoryPageState extends State<PaymenthistoryPage> {
+  String user_type = '';
   Future _paymenthistoryFuture;
+  Future _paymenthistoryposFuture;
   Future _obtainpaymenthistoryFuture() {
     Provider.of<PaymentreceiveData>(context, listen: false).fetPaymenthistory();
   }
 
+  Future _obtainpaymenthistoryposFuture() {
+    Provider.of<PaymentreceiveData>(context, listen: false)
+        .fetPaymenthistoryPos();
+  }
+
   @override
   void initState() {
-    _paymenthistoryFuture = _obtainpaymenthistoryFuture();
+    _getUserPrefer();
     // TODO: implement initState
     super.initState();
+  }
+
+  void _getUserPrefer() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      user_type = prefs.getString("user_type");
+      if (user_type == 'pos') {
+        _paymenthistoryposFuture = _obtainpaymenthistoryposFuture();
+      } else {
+        _paymenthistoryFuture = _obtainpaymenthistoryFuture();
+      }
+      //user_email = prefs.getString("");
+    });
   }
 
   Widget builditem(List<Paymenthistory> data) {

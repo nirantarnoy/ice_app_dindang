@@ -34,14 +34,14 @@ class _AuthPageState extends State<AuthPage> {
 
   Widget _showLogo() {
     return new Hero(
-      tag: 'bp ice',
+      tag: 'dd ice',
       child: Padding(
         padding: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 0.0),
         child: CircleAvatar(
           backgroundColor: Colors.transparent,
           radius: 70.0,
           // child: Image.asset('assets/VP.png'),
-          child: Text('BP ICE',
+          child: Text('DD ICE',
               style: TextStyle(
                   fontSize: 38.0,
                   fontWeight: FontWeight.bold,
@@ -179,6 +179,7 @@ class _AuthPageState extends State<AuthPage> {
           },
         );
       } else {
+        print('login success');
         Navigator.pushReplacementNamed(context, '/');
         print(successInformation);
       }
@@ -257,7 +258,7 @@ class _AuthPageState extends State<AuthPage> {
                     children: <Widget>[
                       // _showLogo(),
                       Text(
-                        'BP ICE',
+                        'DD ICE',
                         style: TextStyle(
                             fontSize: 50,
                             fontWeight: FontWeight.bold,
@@ -310,11 +311,11 @@ class _AuthPageState extends State<AuthPage> {
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[Text('version 2.2')],
+                        children: <Widget>[Text('version 2.3')],
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[Text('update 27-09-2022')],
+                        children: <Widget>[Text('update 24-09-2023')],
                       )
                     ],
                   ),

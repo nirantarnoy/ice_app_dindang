@@ -20,6 +20,7 @@ import 'package:ice_app_new/providers/paymentreceive.dart';
 import 'package:ice_app_new/providers/customer.dart';
 import 'package:ice_app_new/models/paymentreceive.dart';
 import 'package:ice_app_new/models/enum_paytype.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:ice_app_new/widgets/error/err_api.dart';
 
 class PaymentPage extends StatefulWidget {
@@ -60,6 +61,8 @@ class _PaymentPageState extends State<PaymentPage> {
   List<Paymentselected> paymentselected = [];
   List<bool> _isChecked;
 
+  String _user_type = '';
+
   String selectedPaytype = "1";
   // var _isInit = true;
   // var _isLoading = false;
@@ -70,6 +73,10 @@ class _PaymentPageState extends State<PaymentPage> {
 
   Future _obtaincustomerFuture() {
     return Provider.of<CustomerData>(context, listen: false).fetCustomers();
+  }
+
+  Future _obtaincustomerPosFuture() {
+    return Provider.of<CustomerData>(context, listen: false).fetPosCustomers();
   }
 
   Future _obtainpaymentlistFuture() {
@@ -83,6 +90,10 @@ class _PaymentPageState extends State<PaymentPage> {
 
     _customerFuture = _obtaincustomerFuture();
     _paymentlistFuture = _obtainpaymentlistFuture();
+    _obtaincustomerPosFuture();
+
+    _getUserType();
+
     // try {
     //   widget.model.fetchpayments();
     // } on TimeoutException catch (_) {
@@ -91,6 +102,11 @@ class _PaymentPageState extends State<PaymentPage> {
     // Provider.of<OrderData>(context).fetpayments();
     // _isChecked = List<bool>.filled(2, false);
     super.initState();
+  }
+
+  void _getUserType() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    _user_type = prefs.getString("user_type");
   }
 
   @override
@@ -510,8 +526,13 @@ class _PaymentPageState extends State<PaymentPage> {
                                       //   return await BackendService.getSuggestions(pattern);
                                       // },
                                       suggestionsCallback: (pattern) async {
-                                        return await _customer
-                                            .findCustomer(pattern);
+                                        if (_user_type == "car") {
+                                          return await _customer
+                                              .findCustomer(pattern);
+                                        } else {
+                                          return await _customer
+                                              .findCustomerpos(pattern);
+                                        }
                                       },
                                       itemBuilder: (context, suggestion) {
                                         return ListTile(
@@ -532,17 +553,33 @@ class _PaymentPageState extends State<PaymentPage> {
                                       onSuggestionSelected: (items) {
                                         //print("niran");
                                         //print(items.id);
-                                        setState(() {
-                                          selectedValue = items.id;
-                                          Provider.of<PaymentreceiveData>(
-                                                  context,
-                                                  listen: false)
-                                              .fetPaymentreceive(selectedValue);
-                                          this._typeAheadController.text =
-                                              items.name;
-                                          _isChecked =
-                                              List<bool>.filled(200, false);
-                                        });
+                                        if (_user_type == "car") {
+                                          setState(() {
+                                            selectedValue = items.id;
+                                            Provider.of<PaymentreceiveData>(
+                                                    context,
+                                                    listen: false)
+                                                .fetPaymentreceive(
+                                                    selectedValue);
+                                            this._typeAheadController.text =
+                                                items.name;
+                                            _isChecked =
+                                                List<bool>.filled(200, false);
+                                          });
+                                        } else {
+                                          setState(() {
+                                            selectedValue = items.id;
+                                            Provider.of<PaymentreceiveData>(
+                                                    context,
+                                                    listen: false)
+                                                .fetPaymentPosreceive(
+                                                    selectedValue);
+                                            this._typeAheadController.text =
+                                                items.name;
+                                            _isChecked =
+                                                List<bool>.filled(200, false);
+                                          });
+                                        }
                                       },
                                       noItemsFoundBuilder: (context) {
                                         return Padding(

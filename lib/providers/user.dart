@@ -9,25 +9,31 @@ import 'package:ice_app_new/models/user.dart';
 class UserData with ChangeNotifier {
   final String url_to_user_list =
       //    "http://192.168.1.120/icesystembp/frontend/web/api/customer/list";
-      // "http://141.98.16.4/icesystembp/frontend/web/api/customer/list";
-      //  "http://141.98.16.4/icesystembp/frontend/web/api/customer/list";
-      "http://141.98.16.4/icesystembp/frontend/web/api/customer/list";
-  // "http://141.98.16.4/icesystembp/frontend/web/api/customer/list";
+      // "http://103.253.73.108/icesystemdindang/frontend/web/api/customer/list";
+      //  "http://103.253.73.108/icesystemdindang/frontend/web/api/customer/list";
+      "http://103.253.73.108/icesystemdindang/frontend/web/api/customer/list";
+  // "http://103.253.73.108/icesystemdindang/frontend/web/api/customer/list";
   final String url_to_user_login =
       //  "http://192.168.1.120/icesystembp/frontend/web/api/authen/login";
-      // "http://141.98.16.4/icesystembp/frontend/web/api/authen/login";
-      // "http://141.98.16.4/icesystembp/frontend/web/api/authen/login";
-      "http://141.98.16.4/icesystembp/frontend/web/api/authen/login";
+      // "http://103.253.73.108/icesystemdindang/frontend/web/api/authen/login";
+      // "http://103.253.73.108/icesystemdindang/frontend/web/api/authen/login";
+      "http://103.253.73.108/icesystemdindang/frontend/web/api/authen/login";
   final String url_to_user_login_pos =
       //  "http://192.168.1.120/icesystembp/frontend/web/api/authen/login";
-      // "http://141.98.16.4/icesystembp/frontend/web/api/authen/login";
-      // "http://141.98.16.4/icesystembp/frontend/web/api/authen/login";
-      "http://141.98.16.4/icesystembp/frontend/web/api/authen/loginpos";
+      // "http://103.253.73.108/icesystemdindang/frontend/web/api/authen/login";
+      // "http://103.253.73.108/icesystemdindang/frontend/web/api/authen/login";
+      "http://103.253.73.108/icesystemdindang/frontend/web/api/authen/loginpos";
   final String url_to_user_login_qrcode =
       //  "http://192.168.1.120/icesystembp/frontend/web/api/authen/login";
-      // "http://141.98.16.4/icesystembp/frontend/web/api/authen/login";
-      // "http://141.98.16.4/icesystembp/frontend/web/api/authen/login";
-      "http://141.98.16.4/icesystembp/frontend/web/api/authen/loginqrcode";
+      // "http://103.253.73.108/icesystemdindang/frontend/web/api/authen/login";
+      // "http://103.253.73.108/icesystemdindang/frontend/web/api/authen/login";
+      "http://103.253.73.108/icesystemdindang/frontend/web/api/authen/loginqrcode";
+
+  final String url_to_user_logout_pos =
+      //  "http://192.168.1.120/icesystembp/frontend/web/api/authen/login";
+      // "http://103.253.73.108/icesystemdindang/frontend/web/api/authen/login";
+      // "http://103.253.73.108/icesystemdindang/frontend/web/api/authen/login";
+      "http://103.253.73.108/icesystemdindang/frontend/web/api/authen/logoutpos";
 
   User _authenticatedUser;
   Timer _authTimer;
@@ -230,6 +236,7 @@ class UserData with ChangeNotifier {
 
         prefs.setString('expiryTime', expiryTime.toIso8601String());
         prefs.setString('working_mode', 'online');
+        prefs.setString('user_type', 'car');
 
         listuserlogin = data;
         _isauthenuser = true;
@@ -295,6 +302,7 @@ class UserData with ChangeNotifier {
 
         prefs.setString('expiryTime', expiryTime.toIso8601String());
         prefs.setString('working_mode', 'online');
+        prefs.setString('user_type', 'pos');
 
         // set route type
         routeType = res['data'][0]['route_type'].toString();
@@ -392,6 +400,56 @@ class UserData with ChangeNotifier {
     // prefs.remove('studentId');
     _isLoading = false;
     return {'success': true};
+  }
+
+  Future<bool> logoutpos() async {
+    bool logout_success = false;
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String _user_id;
+
+    if (prefs.getString('user_id') != null) {
+      _user_id = prefs.getString('user_id');
+    }
+    final Map<String, dynamic> filterData = {
+      'user_id': _user_id,
+    };
+    print('data for logout pos is ${filterData}');
+    _isLoading = true;
+    notifyListeners();
+    try {
+      http.Response response;
+      response = await http.post(Uri.parse(url_to_user_logout_pos),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode(filterData));
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> res = json.decode(response.body);
+        int _islogout = 0;
+        if (res == null) {
+          _isLoading = false;
+          notifyListeners();
+          return false;
+        }
+
+        for (var i = 0; i < res['data'].length; i++) {
+          _islogout = int.parse(res['data'][i]['logout_success'].toString());
+        }
+        _isLoading = false;
+        notifyListeners();
+        if (_islogout == 1) {
+          logout_success = true;
+          _authenticatedUser = null;
+          _isauthenuser = false;
+          _authTimer.cancel();
+          prefs.clear();
+        }
+        return logout_success;
+      }
+    } catch (_) {}
+
+    _isLoading = false;
+    return logout_success;
   }
 
   void setAuthTimeout(int time) {

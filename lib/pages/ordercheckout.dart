@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 //import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ice_app_new/models/addorder.dart';
 import 'package:ice_app_new/models/enum_paytype.dart';
@@ -368,10 +369,13 @@ class _OrdercheckoutPageState extends State<OrdercheckoutPage> {
       },
     );
     bool issave = await Provider.of<OrderData>(context, listen: false)
-        .addOrderNewPos(_customer_id, listitems, pay_type, discount);
+        .addOrderNew(_customer_id, listitems, pay_type, discount);
     if (issave == true) {
-      if (printBinded == true) {
-        printTicketFromSunmi(listitems);
+      String order_no_pos =
+          Provider.of<OrderData>(context, listen: false).orderno_after_pos;
+      if (printBinded == true && order_no_pos != '') {
+        print("save pos success");
+        // printTicketFromSunmi(order_no_pos, listitems);
       }
       Navigator.push(
         context,
@@ -849,11 +853,10 @@ class _OrdercheckoutPageState extends State<OrdercheckoutPage> {
     );
   }
 
-  void printTicketFromSunmi(List<Addorder> order_items) async {
-    double total_qty = 0;
-    double total_amt = 0;
+  void printTicketFromSunmi(String order_no, List<Addorder> order_items) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String emp_name = prefs.getString('emp_name');
+    print("print after save pos");
     screenshotController
         .captureFromWidget(
       Container(
@@ -861,7 +864,7 @@ class _OrdercheckoutPageState extends State<OrdercheckoutPage> {
         // height: 280,
         color: Colors.white,
         width: 193,
-        height: 250,
+        height: 270,
         child: Column(
           children: <Widget>[
             Row(
@@ -874,7 +877,7 @@ class _OrdercheckoutPageState extends State<OrdercheckoutPage> {
                       barcode: qrCode.Barcode.qrCode(
                         errorCorrectLevel: qrCode.BarcodeQRCorrectionLevel.high,
                       ),
-                      data: 'SO23000001',
+                      data: '${order_no}',
                       width: 50,
                       height: 50,
                     ),
@@ -898,7 +901,7 @@ class _OrdercheckoutPageState extends State<OrdercheckoutPage> {
               children: <Widget>[
                 Expanded(
                     child: Text(
-                  'เลขที่ SO210001',
+                  'เลขที่ ${order_no}',
                   style: TextStyle(
                     fontSize: 10,
                     color: Colors.black,
@@ -985,72 +988,11 @@ class _OrdercheckoutPageState extends State<OrdercheckoutPage> {
             SizedBox(
               height: 8,
             ),
-            Padding(
-              padding: const EdgeInsets.all(1.0),
-              child: order_items.length == 0
-                  ? Text('')
-                  : ListView.builder(
-                      itemCount: order_items.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        total_qty =
-                            total_qty + double.parse(order_items[index].qty);
-                        total_amt = total_amt +
-                            (double.parse(order_items[index].qty) *
-                                double.parse(order_items[index].sale_price));
-                        return Padding(
-                          padding: const EdgeInsets.all(1.0),
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(
-                                flex: 3,
-                                child: Text(
-                                  '${order_items[index].product_code} ${order_items[index].product_name}',
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                  flex: 1,
-                                  child: Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Text(
-                                      '${order_items[index].qty}',
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  )),
-                              Expanded(
-                                  flex: 1,
-                                  child: Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Text(
-                                      '${order_items[index].sale_price}',
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  )),
-                              Expanded(
-                                  flex: 1,
-                                  child: Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Text(
-                                      '${formatter.format(double.parse(order_items[index].qty) * double.parse(order_items[index].sale_price))}',
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ))
-                            ],
-                          ),
-                        );
-                      }),
+            Expanded(
+              child: Container(
+                height: 50,
+                child: _buildorderline(order_items),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(1.0),
@@ -1072,7 +1014,7 @@ class _OrdercheckoutPageState extends State<OrdercheckoutPage> {
                       child: Align(
                         alignment: Alignment.centerRight,
                         child: Text(
-                          '${total_qty}',
+                          '0',
                           style: TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
@@ -1097,7 +1039,7 @@ class _OrdercheckoutPageState extends State<OrdercheckoutPage> {
                       child: Align(
                         alignment: Alignment.centerRight,
                         child: Text(
-                          '${formatter.format(total_amt)}',
+                          '${formatter.format(0)}',
                           style: TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
@@ -1134,8 +1076,85 @@ class _OrdercheckoutPageState extends State<OrdercheckoutPage> {
       await SunmiPrinter.setAlignment(SunmiPrintAlign.CENTER);
       await SunmiPrinter.startTransactionPrint(true);
       await SunmiPrinter.printImage(capturedImage);
-      await SunmiPrinter.lineWrap(2);
+      await SunmiPrinter.lineWrap(5);
       await SunmiPrinter.exitTransactionPrint(true);
     });
+  }
+
+  Widget _buildorderline(List<Addorder> order_items) {
+    // double total_qty = 0;
+    // double total_amt = 0;
+    Widget _items;
+    if (order_items.isNotEmpty) {
+      print("has order line pos");
+      _items = new ListView.builder(
+          padding: EdgeInsets.zero,
+          itemCount: order_items.length,
+          itemBuilder: (BuildContext context, int index) {
+            // total_qty = total_qty + double.parse(order_items[index].qty);
+            // total_amt = total_amt +
+            //     (double.parse(order_items[index].qty) *
+            //         double.parse(order_items[index].sale_price));
+            // return Text(
+            //   "niran",
+            //   style: TextStyle(
+            //     color: Colors.black,
+            //   ),
+            // );
+            return Row(
+              children: <Widget>[
+                Expanded(
+                  flex: 3,
+                  child: Text(
+                    '${order_items[index].product_code} ${order_items[index].product_name}',
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                Expanded(
+                    flex: 1,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        '${order_items[index].qty}',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.black,
+                        ),
+                      ),
+                    )),
+                Expanded(
+                    flex: 1,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        '${order_items[index].sale_price}',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.black,
+                        ),
+                      ),
+                    )),
+                Expanded(
+                    flex: 1,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        '${formatter.format(double.parse(order_items[index].qty) * double.parse(order_items[index].sale_price))}',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ))
+              ],
+            );
+          });
+      return _items;
+    } else {
+      return Text('');
+    }
   }
 }

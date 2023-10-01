@@ -9,20 +9,30 @@ import 'package:ice_app_new/pages/auth.dart';
 import 'package:ice_app_new/pages/blue_print.dart';
 import 'package:ice_app_new/pages/checkinpage.dart';
 import 'package:ice_app_new/pages/createorder_boot.dart';
+import 'package:ice_app_new/pages/createproduct_issue.dart';
 import 'package:ice_app_new/pages/customer_asset.dart';
+import 'package:ice_app_new/pages/dailycount.dart';
+import 'package:ice_app_new/pages/dailytransfer.dart';
 import 'package:ice_app_new/pages/home.dart';
 import 'package:ice_app_new/pages/home_offline.dart';
+import 'package:ice_app_new/pages/home_pos.dart';
 // import 'package:ice_app_new/pages/issuesuccess.dart';
 import 'package:ice_app_new/pages/journalissue.dart';
 import 'package:ice_app_new/pages/offlinetest.dart';
+import 'package:ice_app_new/pages/onhand.dart';
 // import 'package:ice_app_new/pages/offlinetest.dart';
 import 'package:ice_app_new/pages/order_print.dart';
 import 'package:ice_app_new/pages/orderpos.dart';
 // import 'package:ice_app_new/pages/paymentsuccess.dart';
 import 'package:ice_app_new/pages/plan.dart';
+import 'package:ice_app_new/pages/product_rec.dart';
+import 'package:ice_app_new/pages/producttransfer.dart';
 // import 'package:ice_app_new/pages/print_bluetooth.dart';
 import 'package:ice_app_new/pages/qrscan.dart';
+import 'package:ice_app_new/pages/scrap.dart';
 import 'package:ice_app_new/pages/stepper.dart';
+import 'package:ice_app_new/pages/transform.dart';
+import 'package:ice_app_new/providers/dailysum.dart';
 // import 'package:ice_app_new/pages/take_photo.dart';
 // import 'package:ice_app_new/widgets/journalissue/journalissue_item.dart';
 // import 'package:scoped_model/scoped_model.dart';
@@ -56,6 +66,7 @@ class _MainTest extends State<MainTest> with SingleTickerProviderStateMixin {
   String user_photo = '';
   String user_route_code = '';
   String user_car_name = '';
+  String user_type = '';
 
   bool _networkisok = false;
 
@@ -95,27 +106,43 @@ class _MainTest extends State<MainTest> with SingleTickerProviderStateMixin {
       user_photo = prefs.getString("emp_photo");
       user_route_code = prefs.getString("emp_route_name");
       user_car_name = prefs.getString("emp_car_name");
+      user_type = prefs.getString("user_type");
       //user_email = prefs.getString("");
     });
   }
 
   void _onTaped(int index) {
     print(index);
-    setState(() {
+    setState(() async {
       _currentIndex = index;
       if (index == 0) {
         appTitle = '';
       }
       if (index == 1) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => JournalissuePage()));
-        appTitle = 'หน้าหลัก';
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        if (prefs.getString('user_type') == 'pos') {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => OnhandPage()));
+          appTitle = 'หน้าหลัก';
+        } else {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => JournalissuePage()));
+          appTitle = 'หน้าหลัก';
+        }
         _currentIndex = 0;
       }
       if (index == 2) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => OrderPosPage()));
-        appTitle = 'รายการขายสินค้า';
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        if (prefs.getString('user_type') == 'pos') {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => OrderPosPage()));
+          appTitle = 'รายการขายสินค้า';
+        } else if (prefs.getString('user_type') == 'car') {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => OrderPage()));
+          appTitle = 'รายการขายสินค้า';
+        }
+
         _currentIndex = 0;
       }
       if (index == 3) {
@@ -154,15 +181,23 @@ class _MainTest extends State<MainTest> with SingleTickerProviderStateMixin {
     ).show(context);
   }
 
-  void _logoutaction(Function logout) async {
-    Map<String, dynamic> successInformation;
-    successInformation = await logout();
-    if (successInformation['success']) {
+  void _logoutaction(Function logoutpos) async {
+    //Map<String, dynamic> successInformation;
+    bool res = false;
+    res = await logoutpos();
+    if (res == true) {
       print('logout success');
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => CheckinPage()));
       // Navigator.of(context).pop();
     }
+    // successInformation = await logoutpos();
+    // if (successInformation['success']) {
+    //   print('logout success');
+    //   Navigator.push(
+    //       context, MaterialPageRoute(builder: (context) => CheckinPage()));
+    //   // Navigator.of(context).pop();
+    // }
   }
 
   void _logout(UserData users) {
@@ -209,7 +244,7 @@ class _MainTest extends State<MainTest> with SingleTickerProviderStateMixin {
                       color: Colors.lightGreen,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50)),
-                      onPressed: () => _logoutaction(users.logout),
+                      onPressed: () => _logoutaction(users.logoutpos),
                       child: Text('ใช่'),
                     ),
                   ),
@@ -274,14 +309,26 @@ class _MainTest extends State<MainTest> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> tabs = [
-      //JournalissuePage(),
-      _networkisok == true ? HomePage() : HomeOfflinePage(),
-      null,
-      null,
-      null
-      //PaymentPage(),
-    ];
+    List<Widget> tabs = null;
+    if (user_type == 'pos') {
+      tabs = [
+        //JournalissuePage(),
+        _networkisok == true ? HomePosPage() : HomeOfflinePage(),
+        null,
+        null,
+        null
+        //PaymentPage(),
+      ];
+    } else {
+      tabs = [
+        //JournalissuePage(),
+        _networkisok == true ? HomePage() : HomeOfflinePage(),
+        null,
+        null,
+        null
+        //PaymentPage(),
+      ];
+    }
     // List<Widget> tabs = [null, null, null];
     // print('building main test page');
     return SafeArea(
@@ -294,6 +341,24 @@ class _MainTest extends State<MainTest> with SingleTickerProviderStateMixin {
             style: TextStyle(color: Colors.white),
             //      style: TextStyle(fontFamily: 'Cloud-Bold', color: Colors.white),
           ),
+          // actions: [
+          //   IconButton(
+          //       onPressed: () async {
+          //         await Provider.of<DailysumData>(context, listen: false)
+          //             .fetCalcloseshift();
+          //         Navigator.push(
+          //           context,
+          //           MaterialPageRoute(
+          //             builder: (context) => MainTest(),
+          //           ),
+          //         );
+          //       },
+          //       icon: Icon(Icons.calculate)),
+          //   IconButton(
+          //     onPressed: () {},
+          //     icon: Icon(Icons.print),
+          //   ),
+          // ],
           // actions: <Widget>[
           //   // IconButton(
           //   //   //color: Colors.white,
@@ -362,6 +427,7 @@ class _MainTest extends State<MainTest> with SingleTickerProviderStateMixin {
             padding: EdgeInsets.all(0.0),
             children: <Widget>[
               UserAccountsDrawerHeader(
+                arrowColor: user_type == 'pos' ? Colors.green : Colors.blue,
                 accountName: Text(
                   "${user_name}",
                   style: TextStyle(color: Colors.white),
@@ -370,10 +436,15 @@ class _MainTest extends State<MainTest> with SingleTickerProviderStateMixin {
                   children: <Widget>[
                     Icon(Icons.drive_eta_rounded),
                     SizedBox(width: 10),
-                    Text(
-                      "${user_car_name}",
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    user_type == 'car'
+                        ? Text(
+                            "${user_car_name}",
+                            style: TextStyle(color: Colors.white),
+                          )
+                        : Text(
+                            "POS",
+                            style: TextStyle(color: Colors.white),
+                          ),
                   ],
                 ),
                 currentAccountPicture: CircleAvatar(
@@ -385,22 +456,28 @@ class _MainTest extends State<MainTest> with SingleTickerProviderStateMixin {
                   CircleAvatar(
                     backgroundColor: Colors.white,
                     // child: Text("${user_route_code}"),
-                    child: Text("${user_route_code}"),
+                    child: user_type == 'car'
+                        ? Text("${user_route_code}")
+                        : Text('POS'),
                   ),
                 ],
               ),
-              ListTile(
-                title: Text("Sycn ข้อมูล"),
-                trailing: Icon(Icons.sync_alt_outlined),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => OrderPrintPage(),
+              user_type == 'car'
+                  ? ListTile(
+                      title: Text("Sycn ข้อมูล"),
+                      trailing: Icon(Icons.sync_alt_outlined),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => OrderPrintPage(),
+                          ),
+                        );
+                      },
+                    )
+                  : SizedBox(
+                      height: 0,
                     ),
-                  );
-                },
-              ),
               // ListTile(
               //   title: Text("ขายออกบูธ"),
               //   trailing: Icon(Icons.shopping_bag_outlined),
@@ -413,18 +490,22 @@ class _MainTest extends State<MainTest> with SingleTickerProviderStateMixin {
               //     );
               //   },
               // ),
-              ListTile(
-                title: Text("รับคำสั่งซื้อ"),
-                trailing: Icon(Icons.shopping_cart_outlined),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PlanPage(),
+              user_type == 'car'
+                  ? ListTile(
+                      title: Text("รับคำสั่งซื้อ"),
+                      trailing: Icon(Icons.shopping_cart_outlined),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PlanPage(),
+                          ),
+                        );
+                      },
+                    )
+                  : SizedBox(
+                      height: 0,
                     ),
-                  );
-                },
-              ),
 
               // ListTile(
               //   title: Text("บันทึกขายออฟไลน์"),
@@ -439,43 +520,163 @@ class _MainTest extends State<MainTest> with SingleTickerProviderStateMixin {
               //     );
               //   },
               // ),
-
-              ListTile(
-                title: Text("บันทึกขายออฟไลน์"),
-                trailing: Icon(Icons.delivery_dining),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          CustomerpricePage(), // StepperPage(), //OfflinePage(),OrderofflinePage()
+              user_type == 'car'
+                  ? ListTile(
+                      title: Text("บันทึกขายออฟไลน์"),
+                      trailing: Icon(Icons.delivery_dining),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                CustomerpricePage(), // StepperPage(), //OfflinePage(),OrderofflinePage()
+                          ),
+                        );
+                      },
+                    )
+                  : SizedBox(
+                      height: 0,
                     ),
-                  );
-                },
-              ),
-              Divider(),
+              user_type == 'pos'
+                  ? ListTile(
+                      title: Text("รับสินค้าเข้าคลัง"),
+                      trailing: Icon(Icons.warehouse),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProductRecPage(),
+                          ),
+                        );
+                      },
+                    )
+                  : SizedBox(
+                      height: 0,
+                    ),
+              user_type == 'pos'
+                  ? ListTile(
+                      title: Text("เบิกสินค้าสายส่ง"),
+                      trailing: Icon(Icons.pallet),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CreateProductIssuePage(),
+                          ),
+                        );
+                      },
+                    )
+                  : SizedBox(
+                      height: 0,
+                    ),
+              user_type == 'pos'
+                  ? ListTile(
+                      title: Text("แปรสภาพ"),
+                      trailing: Icon(Icons.transform_outlined),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => TransformPage(),
+                          ),
+                        );
+                      },
+                    )
+                  : SizedBox(
+                      height: 0,
+                    ),
+              user_type == 'pos'
+                  ? ListTile(
+                      title: Text("โอน TF"),
+                      trailing: Icon(Icons.transfer_within_a_station),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DailytransferPage(),
+                          ),
+                        );
+                      },
+                    )
+                  : SizedBox(
+                      height: 0,
+                    ),
+              user_type == 'pos'
+                  ? ListTile(
+                      title: Text("รับโอนสินค้า"),
+                      trailing: Icon(Icons.swap_horiz),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProductTransferPage(),
+                          ),
+                        );
+                      },
+                    )
+                  : SizedBox(
+                      height: 0,
+                    ),
+              user_type == 'pos'
+                  ? ListTile(
+                      title: Text("นับจริง"),
+                      trailing: Icon(Icons.numbers),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DailycountPage(),
+                          ),
+                        );
+                      },
+                    )
+                  : SizedBox(
+                      height: 0,
+                    ),
+              user_type == 'pos'
+                  ? ListTile(
+                      title: Text("ของเสีย"),
+                      trailing: Icon(Icons.gpp_maybe),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ScrapPage(),
+                          ),
+                        );
+                      },
+                    )
+                  : SizedBox(
+                      height: 0,
+                    ),
+              user_type == 'car' ? Divider() : Text(''),
               // ListTile(
               //   title: Text("บันทึกขาย"),
               //   trailing: Icon(Icons.shopping_cart_outlined),
               //   onTap: () => {},
               // ),
               // Divider(),
-              ListTile(
-                title: Text("ตรวจสอบ ถัง/กระสอบ"),
-                trailing: Icon(Icons.camera_alt_outlined),
-                onTap: () => {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CustomerAssetPage(),
+              user_type == 'car'
+                  ? ListTile(
+                      title: Text("ตรวจสอบ ถัง/กระสอบ"),
+                      trailing: Icon(Icons.camera_alt_outlined),
+                      onTap: () => {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CustomerAssetPage(),
+                          ),
+                        )
+                        //  Navigator.push(
+                        //         context,
+                        //         MaterialPageRoute(
+                        //             builder: (context) => TakePictureScreen(),),)
+                      },
+                    )
+                  : SizedBox(
+                      height: 0,
                     ),
-                  )
-                  //  Navigator.push(
-                  //         context,
-                  //         MaterialPageRoute(
-                  //             builder: (context) => TakePictureScreen(),),)
-                },
-              ),
+
               // ListTile(
               //   title: Text("QR Scan"),
               //   trailing: Icon(Icons.qr_code_scanner_sharp),

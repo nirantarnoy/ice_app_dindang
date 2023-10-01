@@ -34,14 +34,14 @@ class _AuthPosPageState extends State<AuthPosPage> {
 
   Widget _showLogo() {
     return new Hero(
-      tag: 'bp ice',
+      tag: 'dd ice',
       child: Padding(
         padding: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 0.0),
         child: CircleAvatar(
           backgroundColor: Colors.transparent,
           radius: 70.0,
           // child: Image.asset('assets/VP.png'),
-          child: Text('BP ICE',
+          child: Text('DD ICE',
               style: TextStyle(
                   fontSize: 38.0,
                   fontWeight: FontWeight.bold,
@@ -133,7 +133,7 @@ class _AuthPosPageState extends State<AuthPosPage> {
 
     _formKey.currentState.save();
 
-    List<User> successInformation;
+    List<UserPos> successInformation;
     successInformation =
         await loginpos(_formData['username'], _formData['password']);
 
@@ -156,32 +156,33 @@ class _AuthPosPageState extends State<AuthPosPage> {
     // );
 
     if (successInformation != null) {
-      if (successInformation[0].emp_route_id.toString() == '0') {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('พบข้อผิดพลาด!',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.red)),
-              content: Text('ตรวจสอบว่ามีการจัดรายการรถประจำวันหรือยัง'),
-              actions: <Widget>[
-                ElevatedButton(
-                  child: Text('OK',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.red)),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                )
-              ],
-            );
-          },
-        );
-      } else {
-        Navigator.pushReplacementNamed(context, '/');
-        print(successInformation);
-      }
+      //if (successInformation[0].emp_route_id.toString() == '0') {
+      // showDialog(
+      //   context: context,
+      //   builder: (BuildContext context) {
+      //     return AlertDialog(
+      //       title: Text('พบข้อผิดพลาด!',
+      //           style: TextStyle(
+      //               fontWeight: FontWeight.bold, color: Colors.red)),
+      //       content: Text('ตรวจสอบว่ามีการจัดรายการรถประจำวันหรือยัง'),
+      //       actions: <Widget>[
+      //         ElevatedButton(
+      //           child: Text('OK',
+      //               style: TextStyle(
+      //                   fontWeight: FontWeight.bold, color: Colors.red)),
+      //           onPressed: () {
+      //             Navigator.of(context).pop();
+      //           },
+      //         )
+      //       ],
+      //     );
+      //   },
+      // );
+      //} else {
+      print("login success naja");
+      Navigator.pushReplacementNamed(context, '/');
+      print(successInformation);
+      //}
 
       // showDialog(
       //   context: context,
@@ -257,7 +258,7 @@ class _AuthPosPageState extends State<AuthPosPage> {
                     children: <Widget>[
                       // _showLogo(),
                       Text(
-                        'BP ICE',
+                        'DD ICE',
                         style: TextStyle(
                             fontSize: 50,
                             fontWeight: FontWeight.bold,
@@ -310,11 +311,11 @@ class _AuthPosPageState extends State<AuthPosPage> {
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[Text('version 2.2')],
+                        children: <Widget>[Text('version 2.3')],
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[Text('update 27-09-2022')],
+                        children: <Widget>[Text('update 24-09-2022')],
                       )
                     ],
                   ),

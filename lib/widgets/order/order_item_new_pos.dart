@@ -2,6 +2,7 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:ice_app_new/models/orders_new.dart';
+import 'package:ice_app_new/pages/orderposdetail.dart';
 import 'package:ice_app_new/providers/customer.dart';
 import 'package:intl/intl.dart';
 import 'package:ice_app_new/providers/order.dart';
@@ -32,7 +33,7 @@ class _OrderItemNewPosState extends State<OrderItemNewPos> {
   void didChangeDependencies() {
     if (_isInit) {
       Provider.of<CustomerData>(context, listen: false)
-          .fetCustomers()
+          .fetPosCustomers()
           .then((_) {
         setState(() {
           _isLoading = false;
@@ -72,6 +73,7 @@ class _OrderItemNewPosState extends State<OrderItemNewPos> {
                   orders[index].order_line_id,
                   orders[index].order_line_date,
                   orders[index].order_line_status,
+                  orders[index].order_status,
                 ));
         return orderCards;
       } else {
@@ -138,7 +140,7 @@ class _OrderItemNewPosState extends State<OrderItemNewPos> {
                           //   return await BackendService.getSuggestions(pattern);
                           // },
                           suggestionsCallback: (pattern) async {
-                            return await _customer.findCustomer(pattern);
+                            return await _customer.findCustomerpos(pattern);
                           },
                           itemBuilder: (context, suggestion) {
                             return ListTile(
@@ -388,6 +390,7 @@ class Items extends StatefulWidget {
   final String _order_line_id;
   final String _order_line_date;
   final String _order_line_status;
+  final String _order_status;
 
   Items(
     this._id,
@@ -408,6 +411,7 @@ class Items extends StatefulWidget {
     this._order_line_id,
     this._order_line_date,
     this._order_line_status,
+    this._order_status,
   );
 
   @override
@@ -497,7 +501,8 @@ class _ItemsState extends State<Items> {
           var setData = Provider.of<OrderData>(context, listen: false);
           setData.idOrder = int.parse(widget._id);
           setData.orderCustomerId = widget._customer_id;
-          Navigator.of(context).pushNamed(OrderDetailPage.routeName,
+          setData.orderPosId = widget._id;
+          Navigator.of(context).pushNamed(OrderPosDetailPage.routeName,
               arguments: {
                 'customer_id': widget._customer_id,
                 'order_id': widget._id
@@ -533,13 +538,13 @@ class _ItemsState extends State<Items> {
                 style: TextStyle(fontSize: 14, color: Colors.black),
               ),
               subtitle: Text(
-                "${widget._order_line_date}",
+                "${widget._order_line_date} and ${widget._order_status}",
                 style: TextStyle(color: Colors.cyan[700]),
               ),
               trailing: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  widget._order_line_status != '500'
+                  widget._order_status != '3'
                       ? Text(
                           "${formatter.format(double.parse(widget._line_total))}",
                           style: TextStyle(

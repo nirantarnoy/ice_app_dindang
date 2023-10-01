@@ -11,6 +11,7 @@ import 'package:ice_app_new/widgets/order/order_item_new.dart';
 //import 'package:scoped_model/scoped_model.dart';
 //import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:ice_app_new/widgets/order/order_item_new_pos.dart';
 
 //import 'package:ice_app_new/helpers/activity_connection.dart';
 import 'package:provider/provider.dart';
@@ -204,7 +205,7 @@ class _OrderPosPageState extends State<OrderPosPage>
           if (dataSnapshort.error != null) {
             return Center(child: CircularProgressIndicator());
           } else {
-            return Container(child: OrderItemNew());
+            return Container(child: OrderItemNewPos());
           }
         }
       },

@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ice_app_new/models/productpos.dart';
 //import 'package:ice_app_new/models/car.dart';
 import 'package:ice_app_new/pages/ordercheckout.dart';
+import 'package:ice_app_new/pages/ordercheckoutpospage.dart';
 import 'package:ice_app_new/providers/order.dart';
 import 'package:ice_app_new/providers/paymentreceive.dart';
 import 'package:ice_app_new/providers/product.dart';
@@ -51,6 +52,8 @@ class _CreateorderNewPosPageState extends State<CreateorderNewPosPage> {
     // }
     Provider.of<OrderData>(context, listen: false).fetProductPos();
     customer_type = 0;
+    selectedValue = '71';
+    selectedValueName = 'สด-หน้าบ้าน';
     super.initState();
   }
 
@@ -520,6 +523,8 @@ class _CreateorderNewPosPageState extends State<CreateorderNewPosPage> {
                     onTap: () {
                       setState(() {
                         customer_type = 0;
+                        selectedValue = '71';
+                        selectedValueName = 'สด-หน้าบ้าน';
                       });
                     },
                     child: Container(
@@ -591,7 +596,7 @@ class _CreateorderNewPosPageState extends State<CreateorderNewPosPage> {
                                       // },
                                       suggestionsCallback: (pattern) async {
                                         return await _customer
-                                            .findCustomer(pattern); // online
+                                            .findCustomerpos(pattern); // online
                                         // return await DbHelper.instance
                                         //     .findCustomer(pattern); // offline
                                       },
@@ -759,7 +764,7 @@ class _CreateorderNewPosPageState extends State<CreateorderNewPosPage> {
                             return false;
                           } else {
                             Navigator.of(context).pushNamed(
-                                OrdercheckoutPage.routeName,
+                                OrdercheckoutPosPage.routeName,
                                 arguments: {
                                   'orderitemlist': orderItems,
                                 });

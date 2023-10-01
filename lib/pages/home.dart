@@ -2,12 +2,14 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:ice_app_new/models/paymentdaily.dart';
 import 'package:ice_app_new/models/paymentreceive.dart';
+import 'package:ice_app_new/pages/checkinpage.dart';
 import 'package:ice_app_new/pages/home_offline.dart';
 import 'package:ice_app_new/pages/main_test.dart';
 // import 'package:ice_app_new/providers/product.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ice_app_new/providers/paymentreceive.dart';
+import 'package:ice_app_new/providers/user.dart';
 import 'package:ice_app_new/sqlite/providers/orderoffline.dart';
 
 import 'package:intl/intl.dart';
@@ -26,6 +28,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   bool _showBackToTopButton = false;
   bool _networkisok = false;
   ScrollController _scrollController;
+  BuildContext dcontext;
 
   Future _orderFuture;
   Future _paymentdailyFuture;
@@ -191,6 +194,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 context: context,
                                 barrierDismissible: false,
                                 builder: (BuildContext context) {
+                                  dcontext = context;
                                   return Dialog(
                                     child: Container(
                                       height: 200,
@@ -223,6 +227,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     backgroundColor: Colors.green,
                                     textColor: Colors.white,
                                     fontSize: 16.0);
+                                Map<String, dynamic> successInformation;
+                                successInformation =
+                                    await Provider.of<UserData>(context,
+                                            listen: false)
+                                        .logout();
+
+                                if (successInformation['success']) {
+                                  print('logout success');
+
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => CheckinPage()));
+                                  Navigator.of(dcontext).pop();
+                                  // Navigator.of(context).pop();
+                                }
                               } else {
                                 Fluttertoast.showToast(
                                     msg: "ทำรายการไม่สำเร็จ",
@@ -233,12 +253,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     textColor: Colors.white,
                                     fontSize: 16.0);
                               }
-                              //Navigator.of(context).pop(true);
+                              Navigator.of(dcontext).pop();
+                              Navigator.of(context).pop(false);
                               // Navigator.pushNamed(context, '/home');
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => MainTest()));
+                              // Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (context) => MainTest()));
                             },
                             child: Text('คืนสินค้า'),
                           ),

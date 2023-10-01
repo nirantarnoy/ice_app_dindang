@@ -18,6 +18,8 @@ class OrdersNew {
   final String order_line_date;
   final String order_line_status;
   final String discount_amount;
+  final String order_status;
+  final String close_daily_status;
 
   OrdersNew({
     @required this.id,
@@ -37,5 +39,7 @@ class OrdersNew {
     @required this.order_line_date,
     @required this.order_line_status,
     this.discount_amount,
+    this.order_status,
+    this.close_daily_status,
   });
 }
