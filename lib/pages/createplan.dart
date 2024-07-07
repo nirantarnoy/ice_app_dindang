@@ -314,7 +314,7 @@ class _CreateplanPageState extends State<CreateplanPage> {
                                     textColor: Colors.white,
                                     fontSize: 16.0);
 
-                                // Scaffold.of(context).showSnackBar(
+                                // ScaffoldMessenger.of(context).showSnackBar(
                                 //   SnackBar(
                                 //     content: Row(
                                 //       children: <Widget>[
@@ -377,7 +377,7 @@ class _CreateplanPageState extends State<CreateplanPage> {
                           //     .avl_qty;
                           String _avl = products[index].onhand;
                           // if (selectedValue == null || selectedValue == '') {
-                          //   Scaffold.of(context).showSnackBar(
+                          //   ScaffoldMessenger.of(context).showSnackBar(
                           //     SnackBar(
                           //       content: Row(
                           //         children: <Widget>[

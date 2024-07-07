@@ -52,7 +52,7 @@ class _CreateorderNewPosPageState extends State<CreateorderNewPosPage> {
     // }
     Provider.of<OrderData>(context, listen: false).fetProductPos();
     customer_type = 0;
-    selectedValue = '71';
+    selectedValue = '91';
     selectedValueName = 'สด-หน้าบ้าน';
     super.initState();
   }
@@ -127,9 +127,18 @@ class _CreateorderNewPosPageState extends State<CreateorderNewPosPage> {
     String price,
     String product_name,
     String product_code,
+    String haft_cal,
+    String sale_haft_price,
   ) {
     final double deviceWidth = MediaQuery.of(context).size.width;
     final double targetWidth = deviceWidth > 550.0 ? 500.0 : deviceWidth * 0.75;
+
+    // double new_price = 0;
+    // if (haft_cal == '1') {
+    //   new_price = (double.parse(price) + 2.5);
+    // } else {
+    double new_price = double.parse(price);
+    // }
 
     final TextEditingController _saleqtyTextController =
         TextEditingController();
@@ -201,7 +210,7 @@ class _CreateorderNewPosPageState extends State<CreateorderNewPosPage> {
                                   color: Colors.black87, fontSize: 18),
                             ),
                             Text(
-                              " ${price}",
+                              " ${new_price.toString()}",
                               style:
                                   TextStyle(color: Colors.black, fontSize: 20),
                             ),
@@ -295,14 +304,25 @@ class _CreateorderNewPosPageState extends State<CreateorderNewPosPage> {
                                       item.qty == _saleqtyTextController.text);
                                 });
 
+                                String new_qty =
+                                    _saleqtyTextController.text == '.5'
+                                        ? '0.5'
+                                        : _saleqtyTextController.text;
+                                String new_price = price;
+                                // if (haft_cal == '1') {
+                                //   new_price = sale_haft_price;
+                                // }
+
                                 final Addorder order_item = new Addorder(
                                   customer_id: selectedValue,
                                   customer_name: selectedValueName,
                                   product_id: product_id,
                                   product_code: product_code,
                                   product_name: product_name,
-                                  qty: _saleqtyTextController.text,
-                                  sale_price: price,
+                                  qty: new_qty,
+                                  sale_price: sale_haft_price,
+                                  haft_cal: haft_cal,
+                                  original_sale_price: price,
                                 );
                                 setState(() {
                                   orderItems.add(order_item);
@@ -423,6 +443,8 @@ class _CreateorderNewPosPageState extends State<CreateorderNewPosPage> {
                             products[index].saleprice,
                             products[index].name,
                             products[index].code,
+                            products[index].haft_cal,
+                            products[index].sale_haft_price,
                           );
                         },
                         child: Wrap(
@@ -523,7 +545,7 @@ class _CreateorderNewPosPageState extends State<CreateorderNewPosPage> {
                     onTap: () {
                       setState(() {
                         customer_type = 0;
-                        selectedValue = '71';
+                        selectedValue = '91'; // dindang = 71
                         selectedValueName = 'สด-หน้าบ้าน';
                       });
                     },
@@ -539,6 +561,7 @@ class _CreateorderNewPosPageState extends State<CreateorderNewPosPage> {
                     onTap: () {
                       setState(() {
                         customer_type = 1;
+                        selectedValue = '';
                       });
                     },
                     child: Container(

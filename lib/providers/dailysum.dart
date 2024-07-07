@@ -475,7 +475,7 @@ class DailysumData with ChangeNotifier {
       'branch_id': _branch_id,
     };
 
-    print('prod rec is ${filterData}');
+    print('cash qty data is ${filterData}');
     try {
       http.Response response;
       response = await http.post(
@@ -489,7 +489,7 @@ class DailysumData with ChangeNotifier {
         Map<String, dynamic> res = json.decode(response.body);
         List<BalanceinList> data = [];
         // print('data length is ${res["data"].length}');
-        print('prodrec data is ${res["data"]}');
+        //print('cash qty data is ${res["data"]}');
 
         if (res == null) {
           _isLoading = false;
@@ -578,6 +578,8 @@ class DailysumData with ChangeNotifier {
           notifyListeners();
           return;
         }
+
+        // listcreditqty.clear();
 
         for (var i = 0; i < res['data'].length; i++) {
           final BalanceinList productresult = BalanceinList(

@@ -36,6 +36,10 @@ class OrderData with ChangeNotifier {
   final String url_to_add_order_new_pos =
       "http://103.253.73.108/icesystemdindang/frontend/web/api/order/addordernewpos";
   // "http://192.168.1.120/icesystembp/frontend/web/api/order/addorder";
+
+  final String url_to_add_order_newvp19 =
+      "http://103.253.73.108/icesystemdindang/frontend/web/api/order/addordernewvp19";
+
   final String url_to_add_order_transfer =
       "http://103.253.73.108/icesystemdindang/frontend/web/api/order/addordertransfer";
   // "http://192.168.1.120/icesystembp/frontend/web/api/order/addorder";
@@ -66,6 +70,9 @@ class OrderData with ChangeNotifier {
       "http://103.253.73.108/icesystemdindang/frontend/web/api/order/closeorderposmobile";
   final String url_to_close_order_bpcar =
       "http://103.253.73.108/icesystemdindang/frontend/web/api/order/closeorderbpcar";
+
+  final String url_to_cancel_ordervp19 =
+      "http://103.253.73.108/icesystemdindang/frontend/web/api/order/cancelordervp19";
 
   ///// for common
   bool _isLoading = false;
@@ -227,6 +234,21 @@ class OrderData with ChangeNotifier {
       });
     }
     return total;
+  }
+
+  double get creditPosTotalAmount {
+    double total = 0.0;
+    if (listorder.isNotEmpty) {
+      listorder
+          .where((items) => items.payment_method_id == '2')
+          .forEach((orderItem) {
+        if (orderItem.order_line_status != '500') {
+          total += double.parse(orderItem.line_total);
+        }
+      });
+      //  total = 200;
+    }
+    return (total - sumcreditdiscount);
   }
 
   double get sumqtydetail {
@@ -420,7 +442,7 @@ class OrderData with ChangeNotifier {
         _isApicon = true;
         notifyListeners();
 
-        print('data listorder length is ${listorder.length}');
+        print('data listorder pos length is ${listorder.length}');
         return listorder;
       }
     } catch (_) {
@@ -702,9 +724,11 @@ class OrderData with ChangeNotifier {
     var jsonx = listdata
         .map((e) => {
               'product_id': e.product_id,
-              'qty': e.qty,
+              'qty': double.parse(e.qty),
               'price': e.sale_price,
               'price_group_id': e.price_group_id,
+              'original_sale_price': e.original_sale_price,
+              'haft_cal': e.haft_cal,
             })
         .toList();
 
@@ -1059,7 +1083,7 @@ class OrderData with ChangeNotifier {
     print('data will cancel order is ${orderData}');
     try {
       http.Response response;
-      response = await http.post(Uri.parse(url_to_cancel_order),
+      response = await http.post(Uri.parse(url_to_cancel_ordervp19),
           headers: {'Content-Type': 'application/json'},
           body: json.encode(orderData));
 
@@ -1150,6 +1174,8 @@ class OrderData with ChangeNotifier {
             name: res['data'][i]['name'].toString(),
             saleprice: res['data'][i]['sale_price'].toString(),
             onhand: res['data'][i]['onhand'].toString(),
+            haft_cal: res['data'][i]['haft_cal'].toString(),
+            sale_haft_price: res['data'][i]['sale_haft_price'].toString(),
           );
 
           data.add(orderlineresult);
@@ -1178,7 +1204,7 @@ class OrderData with ChangeNotifier {
 
       if (response.statusCode == 200) {
         Map<String, dynamic> res = json.decode(response.body);
-        print('data add order is  ${res["data"]}');
+        print('data product for pos is  ${res["data"]}');
         List<ProductPos> data = [];
         if (res == null) {
           _isLoading = false;
@@ -1192,6 +1218,8 @@ class OrderData with ChangeNotifier {
             name: res['data'][i]['code'].toString(),
             saleprice: res['data'][i]['sale_price'].toString(),
             onhand: res['data'][i]['onhand'].toString(),
+            haft_cal: res['data'][i]['haft_cal'].toString(),
+            sale_haft_price: res['data'][i]['sale_haft_price'].toString(),
           );
 
           data.add(orderlineresult);

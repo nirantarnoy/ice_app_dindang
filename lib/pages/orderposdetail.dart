@@ -381,134 +381,134 @@ class _OrderPosDetailPageState extends State<OrderPosDetailPage> {
             },
             child: GestureDetector(
               onTap: () {},
-              onLongPress: () {
-                return showDialog(
-                    context: context,
-                    builder: (context) {
-                      final TextEditingController _textEditingController =
-                          TextEditingController();
-                      bool isChecked = false;
+              // onLongPress: () {
+              //   return showDialog(
+              //       context: context,
+              //       builder: (context) {
+              //         final TextEditingController _textEditingController =
+              //             TextEditingController();
+              //         bool isChecked = false;
 
-                      return SingleChildScrollView(
-                        child: Dialog(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                          child: Container(
-                            width: MediaQuery.of(context).size.width - 10,
-                            // height: MediaQuery.of(context).size.height - 300,
-                            height: MediaQuery.of(context).size.height - 100,
-                            // width: double.infinity,
-                            // height: double.infinity,
-                            child: Form(
-                              key: _formKey,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  SizedBox(height: 20),
-                                  Center(
-                                    child: Icon(
-                                      Icons.cancel_outlined,
-                                      size: 50,
-                                      color: Colors.red[400],
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Center(
-                                      child: Text(
-                                    "ยกเลิกการขาย",
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                  )),
-                                  SizedBox(height: 10),
-                                  Center(
-                                    child: Text('ลูกค้า ${customer_name}'),
-                                  ),
-                                  SizedBox(height: 10),
-                                  Center(
-                                    child: Text('เลขที่ ${order_no}'),
-                                  ),
-                                  SizedBox(height: 10),
-                                  Center(
-                                    child: Text('วันที่ ${order_date}'),
-                                  ),
-                                  SizedBox(height: 10),
-                                  Padding(
-                                    padding: const EdgeInsets.all(16),
-                                    child: _buildreason(),
-                                  ),
-                                  SizedBox(height: 10),
-                                  Padding(
-                                    padding: EdgeInsets.fromLTRB(
-                                        0.0, 15.0, 10.0, 0.0),
-                                    child: SizedBox(
-                                      height: 55.0,
-                                      width: targetWidth,
-                                      child: new ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.green[700],
-                                            elevation: 0.2,
-                                            shape: new RoundedRectangleBorder(
-                                                borderRadius:
-                                                    new BorderRadius.circular(
-                                                        15.0)),
-                                          ),
-                                          child: new Text('บันทึก',
-                                              style: new TextStyle(
-                                                  fontSize: 20.0,
-                                                  color: Colors.white)),
-                                          onPressed: () {
-                                            _submitForm(
-                                              customer_id,
-                                              customer_name,
-                                              order_no,
-                                              orders[index].product_code,
-                                              orders[index].line_id.toString(),
-                                            );
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (_) => OrderPage(),
-                                              ),
-                                            );
-                                            //Navigator.pop(context);
-                                          }),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.fromLTRB(
-                                        0.0, 15.0, 10.0, 0.0),
-                                    child: SizedBox(
-                                      height: 55.0,
-                                      width: targetWidth,
-                                      child: new ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.grey[400],
-                                            elevation: 0.2,
-                                            shape: new RoundedRectangleBorder(
-                                                borderRadius:
-                                                    new BorderRadius.circular(
-                                                        15.0)),
-                                          ),
-                                          child: new Text('ยกเลิก',
-                                              style: new TextStyle(
-                                                  fontSize: 20.0,
-                                                  color: Colors.white)),
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          }),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    });
-              },
+              //         return SingleChildScrollView(
+              //           child: Dialog(
+              //             shape: RoundedRectangleBorder(
+              //                 borderRadius: BorderRadius.circular(10)),
+              //             child: Container(
+              //               width: MediaQuery.of(context).size.width - 10,
+              //               // height: MediaQuery.of(context).size.height - 300,
+              //               height: MediaQuery.of(context).size.height - 100,
+              //               // width: double.infinity,
+              //               // height: double.infinity,
+              //               child: Form(
+              //                 key: _formKey,
+              //                 child: Column(
+              //                   mainAxisSize: MainAxisSize.min,
+              //                   children: <Widget>[
+              //                     SizedBox(height: 20),
+              //                     Center(
+              //                       child: Icon(
+              //                         Icons.cancel_outlined,
+              //                         size: 50,
+              //                         color: Colors.red[400],
+              //                       ),
+              //                     ),
+              //                     SizedBox(
+              //                       height: 5,
+              //                     ),
+              //                     Center(
+              //                         child: Text(
+              //                       "ยกเลิกการขาย",
+              //                       style: TextStyle(
+              //                           fontSize: 20,
+              //                           fontWeight: FontWeight.bold),
+              //                     )),
+              //                     SizedBox(height: 10),
+              //                     Center(
+              //                       child: Text('ลูกค้า ${customer_name}'),
+              //                     ),
+              //                     SizedBox(height: 10),
+              //                     Center(
+              //                       child: Text('เลขที่ ${order_no}'),
+              //                     ),
+              //                     SizedBox(height: 10),
+              //                     Center(
+              //                       child: Text('วันที่ ${order_date}'),
+              //                     ),
+              //                     SizedBox(height: 10),
+              //                     Padding(
+              //                       padding: const EdgeInsets.all(16),
+              //                       child: _buildreason(),
+              //                     ),
+              //                     SizedBox(height: 10),
+              //                     Padding(
+              //                       padding: EdgeInsets.fromLTRB(
+              //                           0.0, 15.0, 10.0, 0.0),
+              //                       child: SizedBox(
+              //                         height: 55.0,
+              //                         width: targetWidth,
+              //                         child: new ElevatedButton(
+              //                             style: ElevatedButton.styleFrom(
+              //                               backgroundColor: Colors.green[700],
+              //                               elevation: 0.2,
+              //                               shape: new RoundedRectangleBorder(
+              //                                   borderRadius:
+              //                                       new BorderRadius.circular(
+              //                                           15.0)),
+              //                             ),
+              //                             child: new Text('บันทึก',
+              //                                 style: new TextStyle(
+              //                                     fontSize: 20.0,
+              //                                     color: Colors.white)),
+              //                             onPressed: () {
+              //                               _submitForm(
+              //                                 customer_id,
+              //                                 customer_name,
+              //                                 order_no,
+              //                                 orders[index].product_code,
+              //                                 orders[index].line_id.toString(),
+              //                               );
+              //                               Navigator.push(
+              //                                 context,
+              //                                 MaterialPageRoute(
+              //                                   builder: (_) => OrderPage(),
+              //                                 ),
+              //                               );
+              //                               //Navigator.pop(context);
+              //                             }),
+              //                       ),
+              //                     ),
+              //                     Padding(
+              //                       padding: EdgeInsets.fromLTRB(
+              //                           0.0, 15.0, 10.0, 0.0),
+              //                       child: SizedBox(
+              //                         height: 55.0,
+              //                         width: targetWidth,
+              //                         child: new ElevatedButton(
+              //                             style: ElevatedButton.styleFrom(
+              //                               backgroundColor: Colors.grey[400],
+              //                               elevation: 0.2,
+              //                               shape: new RoundedRectangleBorder(
+              //                                   borderRadius:
+              //                                       new BorderRadius.circular(
+              //                                           15.0)),
+              //                             ),
+              //                             child: new Text('ยกเลิก',
+              //                                 style: new TextStyle(
+              //                                     fontSize: 20.0,
+              //                                     color: Colors.white)),
+              //                             onPressed: () {
+              //                               Navigator.pop(context);
+              //                             }),
+              //                       ),
+              //                     ),
+              //                   ],
+              //                 ),
+              //               ),
+              //             ),
+              //           ),
+              //         );
+              //       });
+              // },
               child: Column(
                 children: <Widget>[
                   ListTile(

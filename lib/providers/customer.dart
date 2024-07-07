@@ -30,8 +30,13 @@ class CustomerData with ChangeNotifier {
       "http://103.253.73.108/icesystemdindang/frontend/web/api/customer/detail";
 
   final String url_to_customer_asset =
+
       // "http://203.203.1.224/icesystembp/frontend/web/api/product/detail";
       "http://103.253.73.108/icesystemdindang/frontend/web/api/customer/assetlist";
+  final String url_to_add_customer_asset =
+      // "http://203.203.1.224/icesystem/frontend/web/api/product/detail";
+      "http://103.253.73.108/icesystemdindang/frontend/web/api/customer/addnewasset";
+
   final String url_to_asset_change_photo =
       // "http://203.203.1.224/icesystembp/frontend/web/api/product/detail";
       "http://103.253.73.108/icesystemdindang/frontend/web/api/customer/updatephoto";
@@ -428,6 +433,65 @@ class CustomerData with ChangeNotifier {
         return true;
       }
     } catch (_) {
+      return false;
+    }
+  }
+
+  Future<dynamic> addNewAsset(List<String> image, String _customer_id,
+      String _product_id, String _location) async {
+    String _company_id = "";
+    String _branch_id = "";
+    String _route_id = "";
+    String _user_id = "";
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getString('user_id') != null) {
+      _company_id = prefs.getString('company_id');
+      _branch_id = prefs.getString('branch_id');
+      _user_id = prefs.getString('user_id');
+      _route_id = prefs.getString('emp_route_id');
+    }
+
+    final Map<String, dynamic> filterData = {
+      'company_id': _company_id,
+      'branch_id': _branch_id,
+      'customer_id': _customer_id,
+      'asset_no': _product_id,
+      'image': image,
+      'name': '',
+      'route_id': _route_id,
+      'user_id': _user_id,
+      'location': _location,
+    };
+    // _isLoading = true;
+    print('data to save new asset is ${filterData}');
+    //  notifyListeners();
+    //print('image path is ${imagefile.path}');
+    try {
+      http.Response response;
+      response = await http.post(
+        Uri.parse(url_to_add_customer_asset),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(filterData),
+      );
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> res = json.decode(response.body);
+        List<CustomerAsset> data = [];
+        print('data add new asset length is ${res["data"].length}');
+        //    print('data server is ${res["data"]}');
+
+        if (res == null) {
+          _isLoading = false;
+          notifyListeners();
+          return false;
+        }
+        _isLoading = false;
+        notifyListeners();
+        return true;
+      }
+    } catch (_) {
+      print("has error");
       return false;
     }
   }

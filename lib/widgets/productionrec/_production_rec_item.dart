@@ -1,4 +1,3 @@
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:ice_app_new/models/orders_new.dart';
@@ -237,6 +236,7 @@ class _ItemsState extends State<Items> {
                         ),
                         backgroundColor: Colors.green,
                       ));
+                      Navigator.of(context).pop(true);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Row(
@@ -257,6 +257,7 @@ class _ItemsState extends State<Items> {
                         backgroundColor: Colors.red,
                       ));
                     }
+                    Navigator.of(context).pop(true);
                   });
                 },
                 child: Text('ยืนยัน'),

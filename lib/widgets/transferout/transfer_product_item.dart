@@ -43,7 +43,7 @@ class _TransferProductItemState extends State<TransferProductItem> {
       );
       //Navigator.of(context).pop();
       // if (res == true) {
-      //   Scaffold.of(context).showSnackBar(
+      //   ScaffoldMessenger.of(context).showSnackBar(
       //     SnackBar(
       //       content: Row(
       //         children: <Widget>[

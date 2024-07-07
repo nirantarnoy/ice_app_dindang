@@ -253,7 +253,6 @@ class _CreateorderNewPageState extends State<CreateorderNewPage> {
                               _saleqtyTextController.text = onhand.toString();
                             } else {
                               // print('can sale');
-
                             }
                           },
                         )),
@@ -322,7 +321,7 @@ class _CreateorderNewPageState extends State<CreateorderNewPage> {
                                     textColor: Colors.white,
                                     fontSize: 16.0);
 
-                                // Scaffold.of(context).showSnackBar(
+                                // ScaffoldMessenger.of(context).showSnackBar(
                                 //   SnackBar(
                                 //     content: Row(
                                 //       children: <Widget>[

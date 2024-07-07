@@ -34,6 +34,7 @@ import 'package:ice_app_new/pages/paymenthistory.dart';
 import 'package:ice_app_new/pages/plancheckout.dart';
 import 'package:ice_app_new/pages/plandetail.dart';
 import 'package:ice_app_new/pages/product_rec.dart';
+import 'package:ice_app_new/pages/productissue_history.dart';
 import 'package:ice_app_new/pages/productissuecheckout.dart';
 import 'package:ice_app_new/pages/productrec_checkout.dart';
 import 'package:ice_app_new/pages/productionrec.dart';
@@ -224,6 +225,8 @@ class _MyAppState extends State<MyApp> {
                 ProducttransfercheckoutPage(),
             CreateProductTransferPage.routeName: (ctx) =>
                 CreateProductTransferPage(),
+            ProductissueHistoryPage.routeName: (ctx) =>
+                ProductissueHistoryPage(),
             //TakePictureScreen.routeName: (ctx) => TakePictureScreen(),
           },
         );

@@ -315,7 +315,7 @@ class _AuthPosPageState extends State<AuthPosPage> {
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[Text('update 24-09-2022')],
+                        children: <Widget>[Text('update 07-07-2024')],
                       )
                     ],
                   ),

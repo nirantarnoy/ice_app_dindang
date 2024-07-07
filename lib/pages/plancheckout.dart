@@ -14,7 +14,7 @@ class PlancheckoutPage extends StatefulWidget {
 
 class _PlancheckoutPageState extends State<PlancheckoutPage> {
   final DateFormat dateformatter = DateFormat('dd-MM-yyyy');
-  var formatter = NumberFormat('#,##,##0');
+  var formatter = NumberFormat('#,##,##0.0#');
   Paytype _paytype = Paytype.Cash;
   DateTime _date = DateTime.now();
 

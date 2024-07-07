@@ -1,10 +1,10 @@
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:ice_app_new/models/orders_new.dart';
 import 'package:ice_app_new/models/productionrec.dart';
 import 'package:ice_app_new/models/transformlistall.dart';
 import 'package:ice_app_new/pages/orderposdetail.dart';
+import 'package:ice_app_new/pages/transformsuccess.dart';
 import 'package:ice_app_new/providers/customer.dart';
 import 'package:ice_app_new/providers/product.dart';
 import 'package:intl/intl.dart';
@@ -218,7 +218,7 @@ class _ItemsState extends State<Items> {
                   setState(() async {
                     bool isdeleled =
                         await Provider.of<ProductData>(context, listen: false)
-                            .removeProdrecLine(widget._id);
+                            .removeProductTransformLine(widget._id);
                     if (isdeleled == true) {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Row(
@@ -238,6 +238,10 @@ class _ItemsState extends State<Items> {
                         ),
                         backgroundColor: Colors.green,
                       ));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => TransformsuccessPage()));
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Row(

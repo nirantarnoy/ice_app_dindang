@@ -10,6 +10,8 @@ class Addorder {
   final String qty;
   final String sale_price;
   final String price_group_id;
+  final String haft_cal;
+  final String original_sale_price;
 
   Addorder({
     this.customer_id,
@@ -21,5 +23,7 @@ class Addorder {
     this.qty,
     this.sale_price,
     this.price_group_id,
+    this.haft_cal,
+    this.original_sale_price,
   });
 }

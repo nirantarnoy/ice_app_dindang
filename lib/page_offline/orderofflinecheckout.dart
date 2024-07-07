@@ -422,7 +422,7 @@ class _OrderofflinecheckoutPageState extends State<OrderofflinecheckoutPage> {
   //         .addTransfer(car_id, transferdata);
   //     Navigator.of(context).pop();
   //     if (res == true) {
-  //       Scaffold.of(context).showSnackBar(
+  //       ScaffoldMessenger.of(context).showSnackBar(
   //         SnackBar(
   //           content: Row(
   //             children: <Widget>[

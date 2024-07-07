@@ -53,14 +53,14 @@ class _CheckinPageState extends State<CheckinPage> {
 
   Widget _showLogo() {
     return new Hero(
-      tag: 'dd ice',
+      tag: 'bp ice',
       child: Padding(
         padding: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 0.0),
         child: CircleAvatar(
           backgroundColor: Colors.transparent,
           radius: 70.0,
           // child: Image.asset('assets/VP.png'),
-          child: Text('DD ICE',
+          child: Text('BP ICE',
               style: TextStyle(
                   fontSize: 38.0,
                   fontWeight: FontWeight.bold,
@@ -430,7 +430,7 @@ class _CheckinPageState extends State<CheckinPage> {
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[Text('update 24-09-2023')],
+                        children: <Widget>[Text('update 07-07-2024')],
                       )
                     ],
                   ),

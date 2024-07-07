@@ -10,6 +10,7 @@ import 'package:ice_app_new/pages/producttransfercheckout.dart';
 import 'package:ice_app_new/providers/deliveryroute.dart';
 import 'package:ice_app_new/providers/paymentreceive.dart';
 import 'package:ice_app_new/providers/product.dart';
+import 'package:ice_app_new/providers/transferin.dart';
 import 'package:ice_app_new/sqlite/providers/db_provider.dart';
 //import 'package:ice_app_new/widgets/order/order_item.dart';
 import 'package:intl/intl.dart';
@@ -55,6 +56,8 @@ class _CreateProductTransferPageState extends State<CreateProductTransferPage> {
     //   _showdialog('Noity', 'Connection time out!');
     // }
     Provider.of<ProductData>(context, listen: false).fetProductAll();
+    Provider.of<TransferinData>(context, listen: false).fetTransferBranch();
+
     super.initState();
   }
 
@@ -246,6 +249,7 @@ class _CreateProductTransferPageState extends State<CreateProductTransferPage> {
                                   product_code: product_code,
                                   product_name: product_name,
                                   qty: _saleqtyTextController.text,
+                                  transfer_branch_id: selectedValue,
                                 );
                                 setState(() {
                                   orderItems.add(order_item);
@@ -409,6 +413,75 @@ class _CreateProductTransferPageState extends State<CreateProductTransferPage> {
           color: Colors.white,
           child: Column(
             children: <Widget>[
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Consumer<TransferinData>(
+                          builder: (context, _branch, _) => TypeAheadField(
+                            textFieldConfiguration: TextFieldConfiguration(
+                              controller: _typeAheadController,
+                              autofocus: false,
+                              style: DefaultTextStyle.of(context)
+                                  .style
+                                  .copyWith(fontStyle: FontStyle.normal),
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                hintText: 'เลือกสาขา',
+                              ),
+                            ),
+                            // suggestionsCallback: (pattern) async {
+                            //   return await BackendService.getSuggestions(pattern);
+                            // },
+                            suggestionsCallback: (pattern) async {
+                              return await _branch
+                                  .findBranch(pattern); // online
+                              // return await DbHelper.instance
+                              //     .findCustomer(pattern); // offline
+                            },
+                            itemBuilder: (context, suggestion) {
+                              return ListTile(
+                                // leading: Icon(Icons.shopping_cart),
+                                title: Text(suggestion.name),
+                                // subtitle: Text('\$${suggestion['price']}'),
+                              );
+                            },
+
+                            onSuggestionSelected: (items) {
+                              setState(() {
+                                selectedValue = items.id.toString();
+                                selectedValueName = items.name;
+
+                                this._typeAheadController.text = items.name;
+                              });
+                            },
+                            noItemsFoundBuilder: (context) {
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(
+                                      'ไม่พบข้อมูล',
+                                      style: TextStyle(
+                                          fontSize: 16, color: Colors.red),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                  ]),
               SizedBox(
                 height: 10,
               ),

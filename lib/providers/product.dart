@@ -70,6 +70,9 @@ class ProductData with ChangeNotifier {
   final String url_to_delete_product_transfer_line =
       "http://103.253.73.108/icesystemdindang/frontend/web/api/production/deleproducttransferline";
 
+  final String url_to_delete_product_transform_line =
+      "http://103.253.73.108/icesystemdindang/frontend/web/api/production/deleteproducttransform";
+
   List<Products> _product;
   List<Products> get listproduct => _product;
 
@@ -347,7 +350,8 @@ class ProductData with ChangeNotifier {
               code: res['data'][i]['code'].toString(),
               name: res['data'][i]['name'].toString(),
               sale_price: res['data'][i]['sale_price'].toString(),
-              image: res['data'][i]['image'].toString());
+              image: res['data'][i]['image'].toString(),
+              haft_price: res['data'][i]['haft_cal'].toString());
 
           //  print('data from server is ${productresult}');
           data.add(productresult);
@@ -816,6 +820,39 @@ class ProductData with ChangeNotifier {
     return is_completed;
   }
 
+  Future<bool> removeProductTransformLine(String line_id) async {
+    bool is_completed = false;
+    String _user_id;
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getString('user_id') != null) {
+      _user_id = prefs.getString('user_id');
+    }
+    final Map<String, dynamic> delete_id = {
+      'id': line_id,
+      'user_id': _user_id,
+    };
+
+    print("data will cancel transform is ${delete_id}");
+
+    try {
+      http.Response response;
+      response = await http.post(
+          Uri.parse(url_to_delete_product_transform_line),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode(delete_id));
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> res = json.decode(response.body);
+        print('data delete length is ${res["data"]}');
+
+        is_completed = true;
+      }
+    } catch (_) {}
+
+    notifyListeners();
+    return is_completed;
+  }
+
   Future<bool> addProductTransfer(List<Addprodrec> listdata) async {
     String _user_id = "";
     String _company_id = "";
@@ -835,6 +872,7 @@ class ProductData with ChangeNotifier {
         .map((e) => {
               'product_id': e.product_id,
               'qty': e.qty,
+              'transfer_branch_id': e.transfer_branch_id,
             })
         .toList();
 
@@ -948,7 +986,7 @@ class ProductData with ChangeNotifier {
     var jsonx = listdata
         .map((e) => {
               'product_id': e.product_id,
-              'qty': e.qty,
+              'qty': double.parse(e.qty),
             })
         .toList();
 

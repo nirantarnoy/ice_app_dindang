@@ -11,8 +11,12 @@ import 'package:ice_app_new/pages/checkinpage.dart';
 import 'package:ice_app_new/pages/createorder_boot.dart';
 import 'package:ice_app_new/pages/createproduct_issue.dart';
 import 'package:ice_app_new/pages/customer_asset.dart';
+
 import 'package:ice_app_new/pages/dailycount.dart';
 import 'package:ice_app_new/pages/dailytransfer.dart';
+
+import 'package:ice_app_new/pages/customerpaymentlist.dart';
+
 import 'package:ice_app_new/pages/home.dart';
 import 'package:ice_app_new/pages/home_offline.dart';
 import 'package:ice_app_new/pages/home_pos.dart';
@@ -38,8 +42,8 @@ import 'package:ice_app_new/providers/dailysum.dart';
 // import 'package:scoped_model/scoped_model.dart';
 // import 'package:connectivity/connectivity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flushbar/flushbar_helper.dart';
-import 'package:flushbar/flushbar.dart';
+// import 'package:flushbar/flushbar_helper.dart';
+// import 'package:flushbar/flushbar.dart';
 
 import 'package:provider/provider.dart';
 
@@ -159,27 +163,27 @@ class _MainTest extends State<MainTest> with SingleTickerProviderStateMixin {
     });
   }
 
-  void show_Title_n_message_Flushbar(BuildContext context) {
-    Flushbar(
-      title: 'Success',
-      message: 'Form Submitted successfully',
-      icon: Icon(
-        Icons.done_outline,
-        size: 28,
-        color: Colors.green.shade300,
-      ),
-      leftBarIndicatorColor: Colors.blue.shade300,
-      duration: Duration(seconds: 3),
-    )..show(context);
-  }
+  // void show_Title_n_message_Flushbar(BuildContext context) {
+  //   Flushbar(
+  //     title: 'Success',
+  //     message: 'Form Submitted successfully',
+  //     icon: Icon(
+  //       Icons.done_outline,
+  //       size: 28,
+  //       color: Colors.green.shade300,
+  //     ),
+  //     leftBarIndicatorColor: Colors.blue.shade300,
+  //     duration: Duration(seconds: 3),
+  //   )..show(context);
+  // }
 
-  void showInfoFlushbar(BuildContext context) {
-    FlushbarHelper.createInformation(
-      message: 'บันทึกข้อมูลเรียบร้อย',
-      title: 'แจ้งให้ทราบ',
-      duration: const Duration(seconds: 5),
-    ).show(context);
-  }
+  // void showInfoFlushbar(BuildContext context) {
+  //   FlushbarHelper.createInformation(
+  //     message: 'บันทึกข้อมูลเรียบร้อย',
+  //     title: 'แจ้งให้ทราบ',
+  //     duration: const Duration(seconds: 5),
+  //   ).show(context);
+  // }
 
   void _logoutaction(Function logoutpos) async {
     //Map<String, dynamic> successInformation;
@@ -189,7 +193,7 @@ class _MainTest extends State<MainTest> with SingleTickerProviderStateMixin {
       print('logout success');
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => CheckinPage()));
-      // Navigator.of(context).pop();
+      Navigator.of(context).pop();
     }
     // successInformation = await logoutpos();
     // if (successInformation['success']) {
@@ -244,7 +248,14 @@ class _MainTest extends State<MainTest> with SingleTickerProviderStateMixin {
                       color: Colors.lightGreen,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50)),
-                      onPressed: () => _logoutaction(users.logoutpos),
+                      onPressed: () {
+                        if (user_type == 'pos') {
+                          _logoutaction(users.logoutpos);
+                        } else {
+                          _logoutaction(users.logout);
+                        }
+                        Navigator.of(context).pop(true);
+                      },
                       child: Text('ใช่'),
                     ),
                   ),
@@ -699,6 +710,21 @@ class _MainTest extends State<MainTest> with SingleTickerProviderStateMixin {
                 onTap: () => {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => BluePrintPage()))
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //         builder: (context) => PrintBluetoothPage()))
+                },
+              ),
+              Divider(),
+              ListTile(
+                title: Text("ลูกค้าที่ต้องชำระเงิน"),
+                trailing: Icon(Icons.money),
+                onTap: () => {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CustomerPaymentListPage()))
                   // Navigator.push(
                   //     context,
                   //     MaterialPageRoute(

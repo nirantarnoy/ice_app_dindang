@@ -142,21 +142,6 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   //}
 
   Widget _buildreason() {
-    // return TextFormField(
-    //   keyboardType: TextInputType.text,
-    //   style: TextStyle(fontSize: 16),
-    //   textAlign: TextAlign.left,
-    //   decoration: InputDecoration(
-    //       labelText: 'ระบุเหตุผล', filled: true, fillColor: Colors.white),
-    //   validator: (String value) {
-    //     if (value.isEmpty || value.length < 1) {
-    //       return 'กรุณากรอกเหตุ';
-    //     }
-    //   },
-    //   onSaved: (String value) {
-    //     _formData['cancel_reason'] = value;
-    //   },
-    // );
     return Column(
       children: <Widget>[
         ListTile(
@@ -212,12 +197,30 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     }
 
     _formKey.currentState.save();
-
-    Provider.of<OrderData>(context, listen: false)
+    bool isSave = await Provider.of<OrderData>(context, listen: false)
         .cancelOrder(line_id, customer_id, customer_code, order_no,
             product_code, _formData['cancel_reason'])
-        .then(
-      (_) {
+        .then((_) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Row(
+          children: <Widget>[
+            Icon(
+              Icons.check_circle,
+              color: Colors.white,
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Text(
+              "ทำรายการสำเร็จ",
+              style: TextStyle(color: Colors.white),
+            ),
+          ],
+        ),
+        backgroundColor: Colors.green,
+      ));
+      bool isSave = false;
+      if (isSave == true) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Row(
             children: <Widget>[
@@ -237,12 +240,39 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
           backgroundColor: Colors.green,
         ));
 
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => OrderPage(),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Row(
+            children: <Widget>[
+              Icon(
+                Icons.check_circle,
+                color: Colors.white,
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Text(
+                "ทำรายการไม่สำเร็จสำเร็จ",
+                style: TextStyle(color: Colors.white),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.red,
+        ));
+
         Navigator.of(context).pop();
-      },
-    );
-    setState(() {
-      // Provider.of<PaymentreceiveData>(context, listen: false)
-      //     .fetPaymentreceive(widget._customer_id);
+      }
+
+      // setState(() {
+      //   // Provider.of<PaymentreceiveData>(context, listen: false)
+      //   //     .fetPaymentreceive(widget._customer_id);
+      // });
     });
   }
 
@@ -413,12 +443,12 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                               orders[index].product_code,
                                               orders[index].line_id.toString(),
                                             );
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (_) => OrderPage(),
-                                              ),
-                                            );
+                                            // Navigator.push(
+                                            //   context,
+                                            //   MaterialPageRoute(
+                                            //     builder: (_) => OrderPage(),
+                                            //   ),
+                                            // );
                                             //Navigator.pop(context);
                                           }),
                                     ),

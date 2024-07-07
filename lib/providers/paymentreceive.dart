@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:ice_app_new/models/customerpaymentlist.dart';
 import 'package:ice_app_new/models/paymentdaily.dart';
 import 'package:ice_app_new/models/paymenthistory.dart';
 import 'package:ice_app_new/models/paymentselected.dart';
@@ -42,6 +43,9 @@ class PaymentreceiveData with ChangeNotifier {
   final String url_to_payment_history_pos =
       "http://103.253.73.108/icesystemdindang/frontend/web/api/paymentreceive/paymenthistorypos";
 
+  final String url_to_customer_payment_list =
+      "http://141.98.16.4/icesystem/frontend/web/api/paymentreceive/paymentcustomerlist";
+
   List<Paymentreceive> _paymentreceive;
   List<Paymentreceive> get listpaymentreceive => _paymentreceive;
 
@@ -50,6 +54,9 @@ class PaymentreceiveData with ChangeNotifier {
 
   List<Paymenthistory> _paymenthistory;
   List<Paymenthistory> get listpaymenthistory => _paymenthistory;
+
+  List<CustomerPaymentList> _customerpaymentlist;
+  List<CustomerPaymentList> get listcustomerpayment => _customerpaymentlist;
 
   bool _isLoading = false;
   bool _isApicon = true;
@@ -75,6 +82,10 @@ class PaymentreceiveData with ChangeNotifier {
   set listpaymentreceive(List<Paymentreceive> val) {
     _paymentreceive = val;
     notifyListeners();
+  }
+
+  set listcustomerpayment(List<CustomerPaymentList> val) {
+    _customerpaymentlist = val;
   }
 
   set listpaymentreceivedaily(List<Paymentdaily> val) {
@@ -649,5 +660,67 @@ class PaymentreceiveData with ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  Future<dynamic> fetchCustomerpaymentlist() async {
+    String route_id = '';
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getString('emp_route_id') != null) {
+      route_id = prefs.getString('emp_route_id');
+    }
+    final Map<String, dynamic> payData = {
+      'route_id': route_id,
+    };
+    print("find customer payment by route is ${route_id}");
+    _isLoading = true;
+    notifyListeners();
+    try {
+      http.Response response;
+      response = await http.post(Uri.parse(url_to_customer_payment_list),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode(payData));
+
+      if (response.statusCode == 200) {
+        print('api ok');
+        Map<String, dynamic> res = json.decode(response.body);
+        List<CustomerPaymentList> data = [];
+        // print('data length is ${res["data"].length}');
+        print('data customer payment is ${res["data"]}');
+
+        if (res == null) {
+          _isLoading = false;
+          notifyListeners();
+          return;
+        }
+        if (res['data'] == null) {
+          _isLoading = false;
+          notifyListeners();
+          return;
+        }
+
+        datalength = res['data'].length;
+        for (var i = 0; i < res['data'].length; i++) {
+          final CustomerPaymentList productresult = CustomerPaymentList(
+            customer_id: res['data'][i]['customer_id'].toString(),
+            customer_name: res['data'][i]['customer_name'].toString(),
+            remain_amt: res['data'][i]['remain'].toString(),
+          );
+
+          print('data from server is ${productresult}');
+          data.add(productresult);
+        }
+
+        listcustomerpayment = data;
+        _isLoading = false;
+        _isApicon = true;
+        notifyListeners();
+        return listcustomerpayment;
+      } else {
+        print('not status 200');
+      }
+    } catch (_) {
+      _isApicon = false;
+      print('call api error');
+    }
   }
 }

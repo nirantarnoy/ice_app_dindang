@@ -1,4 +1,3 @@
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:ice_app_new/models/orders_new.dart';
@@ -45,36 +44,192 @@ class _OrderItemNewPosState extends State<OrderItemNewPos> {
   }
 
   Widget _buildordersList(List<OrdersNew> orders) {
+    var formatter = NumberFormat('#,##,##0.#');
+
+    DateFormat dateformatter = DateFormat('dd-MM-yyyy');
     Widget orderCards;
     if (orders.isNotEmpty) {
       if (orders.length > 0) {
-        // print("has list");
+        print("has list");
+        // orderCards = Text('${orders.length}');
+        // orderCards = new ListView.builder(
+        //     // primary: false,
+        //     //  shrinkWrap: true,
+        //     //  physics: NeverScrollableScrollPhysics(),
+        //     itemCount: orders.length,
+        //     itemBuilder: (BuildContext context, int index) {
+        //       return ListTile(
+        //         leading: Text('${orders[index].qty}'),
+        //       );
+        //     });
+        // itemBuilder: (BuildContext context, int index) => Items(
+        //       orders[index].id,
+        //       orders[index].order_no,
+        //       orders[index].customer_id,
+        //       orders[index].customer_code,
+        //       orders[index].customer_name,
+        //       orders[index].order_date,
+        //       orders[index].product_id,
+        //       orders[index].product_code,
+        //       orders[index].product_name,
+        //       orders[index].payment_method_id,
+        //       orders[index].qty,
+        //       orders[index].price,
+        //       orders[index].line_total,
+        //       orders,
+        //       index,
+        //       orders[index].order_line_id,
+        //       orders[index].order_line_date,
+        //       orders[index].order_line_status,
+        //       orders[index].order_status,
+        //     ));
         orderCards = new ListView.builder(
-            // primary: false,
-            //  shrinkWrap: true,
-            //  physics: NeverScrollableScrollPhysics(),
-            itemCount: orders.length,
-            itemBuilder: (BuildContext context, int index) => Items(
-                  orders[index].id,
-                  orders[index].order_no,
-                  orders[index].customer_id,
-                  orders[index].customer_code,
-                  orders[index].customer_name,
-                  orders[index].order_date,
-                  orders[index].product_id,
-                  orders[index].product_code,
-                  orders[index].product_name,
-                  orders[index].payment_method_id,
-                  orders[index].qty,
-                  orders[index].price,
-                  orders[index].line_total,
-                  orders,
-                  index,
-                  orders[index].order_line_id,
-                  orders[index].order_line_date,
-                  orders[index].order_line_status,
-                  orders[index].order_status,
+          itemCount: orders.length,
+          itemBuilder: (BuildContext context, int index) {
+            String sale_type = '';
+
+            if (orders[index].payment_method_id == '1') {
+              sale_type = 'สด';
+            } else if (orders[index].payment_method_id == '2') {
+              sale_type = 'เชื่อ';
+            } else if (orders[index].payment_method_id == '3') {
+              sale_type = 'ฟรี';
+            }
+            return Dismissible(
+              key: ValueKey(index),
+              background: Container(
+                color: Theme.of(context).errorColor,
+                child: Icon(
+                  Icons.delete,
+                  color: Colors.white,
+                  size: 40,
+                ),
+                alignment: Alignment.centerRight,
+                padding: EdgeInsets.only(right: 20),
+                margin: EdgeInsets.symmetric(horizontal: 15, vertical: 4),
+              ),
+              direction: DismissDirection.endToStart,
+              confirmDismiss: (direction) {
+                return showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: Text('แจ้งเตือน'),
+                    content: Text('ต้องการลบข้อมูลใช่หรือไม่'),
+                    actions: <Widget>[
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(true);
+                        },
+                        child: Text('ยืนยัน'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(false);
+                        },
+                        child: Text('ไม่'),
+                      ),
+                    ],
+                  ),
+                );
+              },
+              onDismissed: (direction) {
+                //  print(orders[index].id);
+                setState(() {
+                  Provider.of<OrderData>(context, listen: false)
+                      .removeOrderDetail(orders[index].order_line_id);
+                  orders.removeAt(index);
+                });
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Row(
+                    children: <Widget>[
+                      Icon(
+                        Icons.check_circle,
+                        color: Colors.white,
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        "ทำรายการสำเร็จ",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
+                  backgroundColor: Colors.green,
                 ));
+              },
+              child: GestureDetector(
+                onTap: () {
+                  var setData = Provider.of<OrderData>(context, listen: false);
+                  setData.idOrder = int.parse(orders[index].id);
+                  setData.orderCustomerId = orders[index].customer_id;
+                  setData.orderPosId = orders[index].id;
+                  Navigator.of(context).pushNamed(OrderPosDetailPage.routeName,
+                      arguments: {
+                        'customer_id': orders[index].customer_id,
+                        'order_id': orders[index].id
+                      });
+                }, // Navigator.of(context).pushNamed(OrderDetailPage.routeName),
+                child: Column(
+                  children: <Widget>[
+                    ListTile(
+                      // leading: ElevatedButton(
+                      //     color:
+                      //         _payment_method_id == "1" ? Colors.green : Colors.purple[300],
+                      //     onPressed: () {},
+                      //     child: Text(
+                      //       "$_payment_method",
+                      //       style: TextStyle(color: Colors.white),
+                      //     )),
+                      // leading: Chip(
+                      //   label:
+                      //       Text("${_order_no}", style: TextStyle(color: Colors.white)),
+                      //   backgroundColor: Colors.green[500],
+                      // ),
+
+                      leading: Chip(
+                        label: Text('${orders.length - index}.${sale_type}'),
+                        backgroundColor: orders[index].payment_method_id == '1'
+                            ? Colors.green[300]
+                            : orders[index].payment_method_id == '2'
+                                ? Colors.orange[300]
+                                : Colors.blue[200],
+                      ),
+                      title: Text(
+                        "${orders[index].customer_name}",
+                        style: TextStyle(fontSize: 14, color: Colors.black),
+                      ),
+                      subtitle: Text(
+                        "${orders[index].order_line_date} and ${orders[index].order_status}",
+                        style: TextStyle(color: Colors.cyan[700]),
+                      ),
+                      trailing: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          orders[index].order_status != '3'
+                              ? Text(
+                                  "${formatter.format(double.parse(orders[index].line_total))}",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                      fontSize: 14),
+                                )
+                              : Text(
+                                  'ยกเลิก',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                        ],
+                      ),
+                    ),
+                    Divider(),
+                  ],
+                ),
+                //child: ListTile(leading: Text('ll')),
+              ),
+            );
+          },
+        );
+
         return orderCards;
       } else {
         return Center(
@@ -524,6 +679,7 @@ class _ItemsState extends State<Items> {
               //       Text("${_order_no}", style: TextStyle(color: Colors.white)),
               //   backgroundColor: Colors.green[500],
               // ),
+
               leading: Chip(
                 label: Text(
                     '${widget._orders.length - widget._index}.${sale_type}'),

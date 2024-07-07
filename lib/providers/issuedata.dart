@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:ice_app_new/models/addissuedata.dart';
+import 'package:ice_app_new/models/issueitemhistory.dart';
 
 import 'package:ice_app_new/models/issueitems.dart';
 import 'package:ice_app_new/models/reviewload.dart';
@@ -17,13 +18,21 @@ class IssueData with ChangeNotifier {
       "http://103.253.73.108/icesystemdindang/frontend/web/api/journalissue/list2";
   final String url_to_oldstockroute_list =
       "http://103.253.73.108/icesystemdindang/frontend/web/api/journalissue/oldstockroute";
+  final String url_to_oldstockroute_history_list =
+      "http://103.253.73.108/icesystemdindang/frontend/web/api/journalissue/carissuehistory";
   final String url_to_user_confirm =
       "http://103.253.73.108/icesystemdindang/frontend/web/api/journalissue/issueconfirm2";
+
+  final String url_to_user_confirmvp18 =
+      "http://103.253.73.108/icesystemdindang/frontend/web/api/journalissue/issueconfirm2vp18";
+
   final String url_to_user_confirm_cancel =
       "http://103.253.73.108/icesystemdindang/frontend/web/api/journalissue/issueconfirmcancel";
 
   final String url_to_add_product_issue =
       "http://103.253.73.108/icesystemdindang/frontend/web/api/journalissue/createissuebp";
+  final String url_to_cancel_issue_car =
+      "http://103.253.73.108/icesystemdindang/frontend/web/api/journalissue/cancelissuecar";
 
   List<Issueitems> _issue;
   List<Issueitems> get listissue => _issue;
@@ -31,6 +40,9 @@ class IssueData with ChangeNotifier {
   List<RouteOldStock> get listoldstock => _oldstock;
   List<ReviewLoadData> _reviewload;
   List<ReviewLoadData> get listreview => _reviewload;
+
+  List<IssueitemHistory> _issuehistory;
+  List<IssueitemHistory> get listissuehistory => _issuehistory;
 
   bool _isLoading = false;
   bool _isApicon = false;
@@ -67,6 +79,11 @@ class IssueData with ChangeNotifier {
 
   set listissue(List<Issueitems> val) {
     _issue = val;
+    notifyListeners();
+  }
+
+  set listissuehistory(List<IssueitemHistory> val) {
+    _issuehistory = val;
     notifyListeners();
   }
 
@@ -325,7 +342,7 @@ class IssueData with ChangeNotifier {
     try {
       http.Response response;
       response = await http.post(
-        Uri.parse(url_to_user_confirm),
+        Uri.parse(url_to_user_confirmvp18),
         headers: {'Content-Type': 'application/json'},
         body: json.encode(updateData),
       );
@@ -599,6 +616,91 @@ class IssueData with ChangeNotifier {
     }
   }
 
+  Future<dynamic> fetoldstockrouteHistory() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String _company_id = "";
+    String _branch_id = "";
+    String _issue_date = new DateTime.now().toString();
+    String _user_id = '';
+    if (prefs.getString('user_id') != null) {
+      _user_id = prefs.getString('user_id');
+      _company_id = prefs.getString('company_id');
+      _branch_id = prefs.getString('branch_id');
+    }
+    final Map<String, dynamic> filterData = {
+      'user_id': _user_id,
+      'company_id': _company_id,
+      'branch_id': _branch_id
+    };
+    print("data for issue history is ${filterData}");
+    _isLoading = true;
+    notifyListeners();
+    try {
+      http.Response response;
+      response = await http.post(
+        Uri.parse(url_to_oldstockroute_history_list),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(filterData),
+      );
+
+      if (response.statusCode == 200) {
+        _isApicon = true;
+        Map<String, dynamic> res = json.decode(response.body);
+        List<IssueitemHistory> data = [];
+
+        print('data old length is ${res["data"].length}');
+        print('data server is ${res["data"]}');
+
+        if (res == null) {
+          _isLoading = false;
+          notifyListeners();
+          return;
+        }
+
+        if (res['data'] == null) {
+          _isLoading = false;
+          notifyListeners();
+          return;
+        }
+
+        for (var i = 0; i < res['data'].length; i++) {
+          //  idIssue = int.parse(res['data'][i]['issue_id'].toString());
+
+          // if (res['data'][i]['status'].toString() == "150") {
+          //   userconfirm = 0;
+          // } else if (res['data'][i]['status'].toString() == "2") {
+          //   userconfirm = 1;
+          // }
+          final IssueitemHistory oldstockresult = IssueitemHistory(
+            issue_no: res['data'][i]['issue_no'].toString(),
+            issue_id: res['data'][i]['issue_id'].toString(),
+            line_issue_id: res['data'][i]['line_issue_id'].toString(),
+            product_id: res['data'][i]['product_id'].toString(),
+            product_name: res['data'][i]['product_name'].toString(),
+            qty: res['data'][i]['qty'].toString(),
+            route_id: res['data'][i]['route_id'].toString(),
+            route_name: res['data'][i]['route_code'].toString(),
+            trans_date: res['data'][i]['trans_date'].toString(),
+          );
+
+          //  print('data from server is ${issueresult}');
+
+          data.add(oldstockresult);
+        }
+
+        listissuehistory = data;
+
+        _isLoading = false;
+        notifyListeners();
+        return listissuehistory;
+      }
+    } catch (_) {
+      _isApicon = false;
+      print('cannot connect api.');
+    }
+  }
+
   Future<bool> addProductissue(
     String route_id,
     List<Addissuedata> listdata,
@@ -656,5 +758,68 @@ class IssueData with ChangeNotifier {
       // print('cannot create order');
     }
     return _iscomplated;
+  }
+
+  Future<bool> cancelissuecar(String issue_id, String route_id) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String _company_id = "";
+    String _branch_id = "";
+    String _issue_date = new DateTime.now().toString();
+    String _userid = '';
+    String _route_id = '';
+    if (prefs.getString('user_id') != null) {
+      _userid = prefs.getString('user_id');
+    }
+    final Map<String, dynamic> updateData = {
+      'user_id': _userid,
+      'issue_id': issue_id,
+      'route_id': route_id,
+    };
+
+    print('cancel is ${updateData}');
+    _isLoading = true;
+    notifyListeners();
+    try {
+      http.Response response;
+      response = await http.post(
+        Uri.parse(url_to_cancel_issue_car),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(updateData),
+      );
+
+      if (response.statusCode == 200) {
+        _isApicon = true;
+        Map<String, dynamic> res = json.decode(response.body);
+        List<Issueitems> data = [];
+
+        print('data confirm cancel length is ${res["data"].length}');
+        print('data server cancel is ${res["data"]}');
+
+        if (res == null) {
+          _isLoading = false;
+          notifyListeners();
+          return false;
+        }
+
+        if (res['data'] == null) {
+          _isLoading = false;
+          notifyListeners();
+          return false;
+        }
+
+        for (var i = 0; i < res['data'].length; i++) {
+          if (res['data'][i]['message'].toString() == "success") {
+            return true;
+          } else {
+            return false;
+          }
+        }
+        return true;
+      }
+    } catch (_) {
+      _isApicon = false;
+      print('cannot connect api.');
+      return false;
+    }
   }
 }

@@ -5,6 +5,7 @@ import 'package:ice_app_new/models/deliveryroute.dart';
 import 'package:ice_app_new/models/productissuebp.dart';
 //import 'package:ice_app_new/models/car.dart';
 import 'package:ice_app_new/pages/ordercheckout.dart';
+import 'package:ice_app_new/pages/productissue_history.dart';
 import 'package:ice_app_new/pages/productissuecheckout.dart';
 import 'package:ice_app_new/providers/deliveryroute.dart';
 import 'package:ice_app_new/providers/paymentreceive.dart';
@@ -507,6 +508,14 @@ class _CreateProductIssuePageState extends State<CreateProductIssuePage> {
               color: Colors.white,
             ),
           ),
+          actions: [
+            IconButton(
+                onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ProductissueHistoryPage())),
+                icon: Icon(Icons.list_alt)),
+          ],
         ),
         body: Container(
           //body: SaleProductItem(),

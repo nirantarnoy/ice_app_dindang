@@ -91,6 +91,17 @@ class _OrdercheckoutPosPageState extends State<OrdercheckoutPosPage> {
               itemBuilder: (BuildContext context, int index) {
                 // total_amount =
                 //     total_amount + int.parse(paymentlist[index].order_amount);
+                double line_price =
+                    double.parse(itemlist[index].original_sale_price);
+                double line_qty = double.parse(itemlist[index].qty);
+                final ex_str = itemlist[index].qty.split('.');
+                if (ex_str.length > 1) {
+                  if (int.parse(ex_str[0]) > 0) {
+                    // nothing
+                  } else {
+                    line_price = double.parse(itemlist[index].sale_price);
+                  }
+                } else {}
 
                 return Dismissible(
                   key: ValueKey(itemlist[index]),
@@ -180,7 +191,7 @@ class _OrdercheckoutPosPageState extends State<OrdercheckoutPosPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Text(
-                                    "ราคาขาย ${itemlist[index].sale_price}",
+                                    "ราคาขาย ${itemlist[index].original_sale_price}",
                                     style: TextStyle(
                                         fontSize: 12, color: Colors.cyan[700]),
                                   ),
@@ -192,13 +203,12 @@ class _OrdercheckoutPosPageState extends State<OrdercheckoutPosPage> {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: <Widget>[
                               Text(
-                                "x${itemlist[index].qty}",
+                                "x${line_qty}",
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold),
                               ),
-                              Text(
-                                  "${formatter.format(double.parse(itemlist[index].qty) * double.parse(itemlist[index].sale_price))}",
+                              Text("${formatter.format(line_price)}",
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Colors.red[700],
@@ -419,8 +429,41 @@ class _OrdercheckoutPosPageState extends State<OrdercheckoutPosPage> {
     //paymentselected[0].order_amount
     order_items.forEach((elm) {
       total_qty = (total_qty + double.parse(elm.qty));
-      total_amount = (total_amount +
-          (double.parse(elm.qty) * double.parse(elm.sale_price)));
+      if (elm.haft_cal == '1') {
+        final ex_str = elm.qty.toString().split('.');
+        if (ex_str.length > 1) {
+          String qty_1 = ex_str[0];
+          String qty_2 = ex_str[1];
+
+          print('qty_1 is ${qty_1}');
+          print('qty_2 is ${qty_2}');
+          if (qty_1.isNotEmpty) {
+            print("have prefix is ${qty_1}");
+            if (qty_1 != "0") {
+              total_amount = (total_amount +
+                  (double.parse(qty_1) *
+                      double.parse(elm.original_sale_price)));
+
+              String after_dot = '0.${qty_2}';
+              total_amount = (total_amount + double.parse(elm.sale_price));
+            } else {
+              total_amount = (total_amount + double.parse(elm.sale_price));
+            }
+          } else {
+            print("not have prefix");
+            // String after_dot = "0." + qty_2.toString();
+            total_amount = (total_amount + double.parse(elm.sale_price));
+          }
+        } else {
+          total_amount = (total_amount +
+              (double.parse(elm.qty) * double.parse(elm.original_sale_price)));
+        }
+        // total_amount = double.parse(elm.sale_price);
+      } else {
+        print("empty condition");
+        total_amount = (total_amount +
+            (double.parse(elm.qty) * double.parse(elm.original_sale_price)));
+      }
     });
     return SafeArea(
       child: Scaffold(
@@ -862,6 +905,12 @@ class _OrdercheckoutPosPageState extends State<OrdercheckoutPosPage> {
     if (order_items.length == 4) {
       paper_height = 275;
     }
+    if (order_items.length == 5) {
+      paper_height = 290;
+    }
+    if (order_items.length == 6) {
+      paper_height = 305;
+    }
     screenshotController
         .captureFromWidget(
       Container(
@@ -1233,6 +1282,25 @@ class _OrdercheckoutPosPageState extends State<OrdercheckoutPosPage> {
             //   ),
             // );
             print('loop product is ${order_items[index].product_name}');
+            double line_total = 0;
+            double line_price =
+                double.parse(order_items[index].original_sale_price);
+            double line_exten_price = 0;
+            final ex_str = order_items[index].qty.split('.');
+            if (ex_str.length > 1) {
+              if (int.parse(ex_str[0]) > 0) {
+                // nothing
+                line_total = double.parse(ex_str[0]) * line_price;
+                if (int.parse(ex_str[1]) > 0) {
+                  line_total =
+                      line_total + double.parse(order_items[index].sale_price);
+                }
+              } else {
+                line_total = double.parse(order_items[index].sale_price);
+              }
+            } else {
+              line_total = double.parse(order_items[index].qty) * line_price;
+            }
             return Padding(
               padding: const EdgeInsets.all(1.0),
               child: Row(
@@ -1264,7 +1332,7 @@ class _OrdercheckoutPosPageState extends State<OrdercheckoutPosPage> {
                       child: Align(
                         alignment: Alignment.centerRight,
                         child: Text(
-                          '${order_items[index].sale_price}',
+                          '${line_price}',
                           style: TextStyle(
                             fontSize: 10,
                             color: Colors.black,
@@ -1276,7 +1344,7 @@ class _OrdercheckoutPosPageState extends State<OrdercheckoutPosPage> {
                       child: Align(
                         alignment: Alignment.centerRight,
                         child: Text(
-                          '${formatter.format(double.parse(order_items[index].qty) * double.parse(order_items[index].sale_price))}',
+                          '${formatter.format(line_total)}',
                           style: TextStyle(
                             fontSize: 10,
                             color: Colors.black,
@@ -1297,11 +1365,13 @@ class _OrdercheckoutPosPageState extends State<OrdercheckoutPosPage> {
     double total_qty = 0;
     double total_amt = 0;
     if (order_items.isNotEmpty) {
-      order_items.forEach((element) {
-        total_qty = total_qty + double.parse(element.qty);
-        total_amt = total_amt +
-            (double.parse(element.qty) * double.parse(element.sale_price));
-      });
+      // order_items.forEach((element) {
+      //   total_qty = total_qty + double.parse(element.qty);
+      //   total_amt = total_amt +
+      //       (double.parse(element.qty) * double.parse(element.sale_price));
+      // });
+      total_qty = _calsliptotal(order_items, 1);
+      total_amt = _calsliptotal(order_items, 2);
       return Padding(
         padding: const EdgeInsets.all(1.0),
         child: Row(
@@ -1360,6 +1430,55 @@ class _OrdercheckoutPosPageState extends State<OrdercheckoutPosPage> {
       );
     } else {
       return Text('');
+    }
+  }
+
+  double _calsliptotal(List<Addorder> order_items, int type_return) {
+    double total_qty = 0;
+    double total_amount = 0;
+
+    order_items.forEach((elm) {
+      total_qty = (total_qty + double.parse(elm.qty));
+      if (elm.haft_cal == '1') {
+        final ex_str = elm.qty.split('.');
+        if (ex_str.length > 1) {
+          String qty_1 = ex_str[0];
+          String qty_2 = ex_str[1];
+
+          print('qty_1 is ${qty_1}');
+          print('qty_2 is ${qty_2}');
+          if (qty_1.isNotEmpty) {
+            print("have prefix is ${qty_1}");
+            if (qty_1 != "0") {
+              total_amount = (total_amount +
+                  (double.parse(qty_1) *
+                      double.parse(elm.original_sale_price)));
+
+              String after_dot = '0.${qty_2}';
+              total_amount = (total_amount + double.parse(elm.sale_price));
+            } else {
+              total_amount = (total_amount + double.parse(elm.sale_price));
+            }
+          } else {
+            print("not have prefix");
+            String after_dot = '0.${qty_2}';
+            total_amount = (total_amount + double.parse(elm.sale_price));
+          }
+        } else {
+          total_amount = (total_amount +
+              (double.parse(elm.qty) * double.parse(elm.original_sale_price)));
+        }
+        // total_amount = double.parse(elm.sale_price);
+      } else {
+        print("empty condition");
+        total_amount = (total_amount +
+            (double.parse(elm.qty) * double.parse(elm.original_sale_price)));
+      }
+    });
+    if (type_return == 1) {
+      return total_qty;
+    } else {
+      return total_amount;
     }
   }
 }

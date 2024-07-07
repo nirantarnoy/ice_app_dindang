@@ -160,60 +160,73 @@ class _HomePosPageState extends State<HomePosPage>
   void initState() {
     showempid();
     _checkinternet();
-    _orderFuture = _obtainOrderFuture();
-    _paymentdailyFuture = _obtainPaymentdailyFuture();
-    _orderDiscount = _obtainOrderDiscountFuture();
-    _balanceinFuture = _obtainBalanceInFuture();
-    _prodrecFuture = _obtainProdrecFuture();
-    _scrapFuture = _obtainScrapFuture();
-    _countingFuture = _obtainCountingFuture();
-    _cashQtyFuture = _obtainCashQtyFuture();
-    _creditQtyFuture = _obtainCreditQtyFuture();
-    //  _obtainCalcloseShiftFuture();
-    _obtainTransferQtyFuture();
-    _obtainRepackQtyFuture();
-    _obtainReProcesscarQtyFuture();
-    _obtainRefillQtyFuture();
-    _obtainPaymentPosdailyFuture();
-    _obtainCheckOrderOfflineFuture();
+    Provider.of<OrderData>(context, listen: false).fetPosOrders();
+    initdata();
+    // _orderFuture = _obtainOrderFuture();
+    // // _paymentdailyFuture = _obtainPaymentdailyFuture();
+    // // _orderDiscount = _obtainOrderDiscountFuture();
+    // // _balanceinFuture = _obtainBalanceInFuture();
+    // // _prodrecFuture = _obtainProdrecFuture();
+    // // _scrapFuture = _obtainScrapFuture();
+    // // _countingFuture = _obtainCountingFuture();
+    // // _cashQtyFuture = _obtainCashQtyFuture();
+    // // _creditQtyFuture = _obtainCreditQtyFuture();
+    // //  _obtainCalcloseShiftFuture();
 
-    // BalanceinList xlistitem = new BalanceinList(
-    //     product_code: 'xx', product_name: 'xxxfdfdfdfd', qty: '20');
-    // xlist.add(xlistitem);
+    // _obtainOrderFuture();
+    // _obtainPaymentdailyFuture();
+    // _obtainOrderDiscountFuture();
+    // _obtainBalanceInFuture();
+    // _obtainProdrecFuture();
+    // _obtainScrapFuture();
+    // _obtainCountingFuture();
+    // _obtainCashQtyFuture();
+    // _obtainCreditQtyFuture();
 
-    // List<BalanceinList> _prodreclist = [];
-    // List<BalanceinList> _transferlist = [];
-    // List<BalanceinList> _repacklist = [];
-    // List<BalanceinList> _reprocesslist = [];
-    // List<BalanceinList> _refilllist = [];
-    // List<BalanceinList> _cashqtylist = [];
-    // List<BalanceinList> _creditqtylist = [];
-    // List<BalanceinList> _scraplist = [];
-    // List<BalanceinList> _countlist = [];
+    // _obtainTransferQtyFuture();
+    // _obtainRepackQtyFuture();
+    // _obtainReProcesscarQtyFuture();
+    // _obtainRefillQtyFuture();
+    // _obtainPaymentPosdailyFuture();
+    // _obtainCheckOrderOfflineFuture();
 
-    _balanceinlist =
-        Provider.of<DailysumData>(context, listen: false).listbalancein;
-    _prodreclist =
-        Provider.of<DailysumData>(context, listen: false).listprodrec;
-    _transferlist =
-        Provider.of<DailysumData>(context, listen: false).listtransferqty;
-    _repacklist =
-        Provider.of<DailysumData>(context, listen: false).listrepackqty;
-    _reprocesslist =
-        Provider.of<DailysumData>(context, listen: false).listreprocesscarqty;
-    _refilllist =
-        Provider.of<DailysumData>(context, listen: false).listrefillqty;
-    _cashqtylist =
-        Provider.of<DailysumData>(context, listen: false).listcashqty;
-    _creditqtylist =
-        Provider.of<DailysumData>(context, listen: false).listcreditqty;
+    // // BalanceinList xlistitem = new BalanceinList(
+    // //     product_code: 'xx', product_name: 'xxxfdfdfdfd', qty: '20');
+    // // xlist.add(xlistitem);
 
-    _scraplist = Provider.of<DailysumData>(context, listen: false).listscrap;
+    // // List<BalanceinList> _prodreclist = [];
+    // // List<BalanceinList> _transferlist = [];
+    // // List<BalanceinList> _repacklist = [];
+    // // List<BalanceinList> _reprocesslist = [];
+    // // List<BalanceinList> _refilllist = [];
+    // // List<BalanceinList> _cashqtylist = [];
+    // // List<BalanceinList> _creditqtylist = [];
+    // // List<BalanceinList> _scraplist = [];
+    // // List<BalanceinList> _countlist = [];
 
-    _countlist = Provider.of<DailysumData>(context, listen: false).listcounting;
+    // _balanceinlist =
+    //     Provider.of<DailysumData>(context, listen: false).listbalancein;
+    // _prodreclist =
+    //     Provider.of<DailysumData>(context, listen: false).listprodrec;
+    // _transferlist =
+    //     Provider.of<DailysumData>(context, listen: false).listtransferqty;
+    // _repacklist =
+    //     Provider.of<DailysumData>(context, listen: false).listrepackqty;
+    // _reprocesslist =
+    //     Provider.of<DailysumData>(context, listen: false).listreprocesscarqty;
+    // _refilllist =
+    //     Provider.of<DailysumData>(context, listen: false).listrefillqty;
+    // _cashqtylist =
+    //     Provider.of<DailysumData>(context, listen: false).listcashqty;
+    // _creditqtylist =
+    //     Provider.of<DailysumData>(context, listen: false).listcreditqty;
 
-    isclosepos_daily =
-        Provider.of<OrderData>(context, listen: false).checkdailyclose;
+    // _scraplist = Provider.of<DailysumData>(context, listen: false).listscrap;
+
+    // _countlist = Provider.of<DailysumData>(context, listen: false).listcounting;
+
+    // isclosepos_daily =
+    //     Provider.of<OrderData>(context, listen: false).checkdailyclose;
     super.initState();
 
     _scrollController = ScrollController()
@@ -251,6 +264,60 @@ class _HomePosPageState extends State<HomePosPage>
       setState(() {
         printBinded = isBind;
       });
+    });
+  }
+
+  Future initdata() async {
+    print('call main function');
+    await Provider.of<DailysumData>(context, listen: false).fetCalcloseshift();
+
+    await Provider.of<DailysumData>(context, listen: false).fetBalancein();
+    await Provider.of<DailysumData>(context, listen: false).fetCashQty();
+    await Provider.of<DailysumData>(context, listen: false).fetCreditQty();
+    //
+    _orderFuture = _obtainOrderFuture();
+    _obtainOrderFuture();
+    _obtainPaymentdailyFuture();
+    _obtainOrderDiscountFuture();
+    // _obtainBalanceInFuture();
+    _obtainProdrecFuture();
+    _obtainScrapFuture();
+    _obtainCountingFuture();
+    //  _obtainCashQtyFuture();
+    //  _obtainCreditQtyFuture();
+
+    _obtainTransferQtyFuture();
+    _obtainRepackQtyFuture();
+    _obtainReProcesscarQtyFuture();
+    _obtainRefillQtyFuture();
+    _obtainPaymentPosdailyFuture();
+    _obtainCheckOrderOfflineFuture();
+
+    setState(() async {
+      _balanceinlist =
+          await Provider.of<DailysumData>(context, listen: false).listbalancein;
+      _prodreclist =
+          Provider.of<DailysumData>(context, listen: false).listprodrec;
+      _transferlist =
+          Provider.of<DailysumData>(context, listen: false).listtransferqty;
+      _repacklist =
+          Provider.of<DailysumData>(context, listen: false).listrepackqty;
+      _reprocesslist =
+          Provider.of<DailysumData>(context, listen: false).listreprocesscarqty;
+      _refilllist =
+          Provider.of<DailysumData>(context, listen: false).listrefillqty;
+      _cashqtylist =
+          await Provider.of<DailysumData>(context, listen: false).listcashqty;
+      _creditqtylist =
+          await Provider.of<DailysumData>(context, listen: false).listcreditqty;
+
+      _scraplist = Provider.of<DailysumData>(context, listen: false).listscrap;
+
+      _countlist =
+          Provider.of<DailysumData>(context, listen: false).listcounting;
+
+      isclosepos_daily =
+          Provider.of<OrderData>(context, listen: false).checkdailyclose;
     });
   }
 
@@ -429,6 +496,13 @@ class _HomePosPageState extends State<HomePosPage>
                                                   CheckinPage()));
                                       Navigator.of(dcontext).pop();
                                       // Navigator.of(context).pop();
+                                    } else {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  CheckinPage()));
+                                      Navigator.of(dcontext).pop();
                                     }
 
                                     // Map<String, dynamic> successInformation;
@@ -705,8 +779,7 @@ class _HomePosPageState extends State<HomePosPage>
                                     padding: const EdgeInsets.all(8.0),
                                     child: GestureDetector(
                                       onTap: () async {
-                                        bool res =
-                                            await _obtainCalcloseShiftFuture();
+                                        bool res = await initdata();
                                         if (res == true) {
                                           Navigator.push(
                                             context,
@@ -1251,7 +1324,7 @@ class _HomePosPageState extends State<HomePosPage>
                               ),
                               SizedBox(height: 5),
                               Container(
-                                width: MediaQuery.of(context).size.width - 25,
+                                width: MediaQuery.of(context).size.width - 45,
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
@@ -1354,7 +1427,7 @@ class _HomePosPageState extends State<HomePosPage>
                               ),
                               SizedBox(height: 20),
                               Container(
-                                width: MediaQuery.of(context).size.width - 25,
+                                width: MediaQuery.of(context).size.width - 45,
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
@@ -1455,7 +1528,7 @@ class _HomePosPageState extends State<HomePosPage>
                               ),
                               SizedBox(height: 20),
                               Container(
-                                width: MediaQuery.of(context).size.width - 25,
+                                width: MediaQuery.of(context).size.width - 45,
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
@@ -1558,7 +1631,7 @@ class _HomePosPageState extends State<HomePosPage>
                               ),
                               SizedBox(height: 20),
                               Container(
-                                width: MediaQuery.of(context).size.width - 25,
+                                width: MediaQuery.of(context).size.width - 45,
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
@@ -1661,7 +1734,7 @@ class _HomePosPageState extends State<HomePosPage>
                               ),
                               SizedBox(height: 20),
                               Container(
-                                width: MediaQuery.of(context).size.width - 25,
+                                width: MediaQuery.of(context).size.width - 45,
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
@@ -1765,7 +1838,7 @@ class _HomePosPageState extends State<HomePosPage>
                               ),
                               SizedBox(height: 20),
                               Container(
-                                width: MediaQuery.of(context).size.width - 25,
+                                width: MediaQuery.of(context).size.width - 45,
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
@@ -1868,7 +1941,7 @@ class _HomePosPageState extends State<HomePosPage>
                               ),
                               SizedBox(height: 20),
                               Container(
-                                width: MediaQuery.of(context).size.width - 25,
+                                width: MediaQuery.of(context).size.width - 45,
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
@@ -1969,7 +2042,7 @@ class _HomePosPageState extends State<HomePosPage>
                               ),
                               SizedBox(height: 20),
                               Container(
-                                width: MediaQuery.of(context).size.width - 25,
+                                width: MediaQuery.of(context).size.width - 45,
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
@@ -2072,7 +2145,7 @@ class _HomePosPageState extends State<HomePosPage>
                               ),
                               SizedBox(height: 20),
                               Container(
-                                width: MediaQuery.of(context).size.width - 25,
+                                width: MediaQuery.of(context).size.width - 45,
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
@@ -2173,7 +2246,7 @@ class _HomePosPageState extends State<HomePosPage>
                               ),
                               SizedBox(height: 20),
                               Container(
-                                width: MediaQuery.of(context).size.width - 25,
+                                width: MediaQuery.of(context).size.width - 45,
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),

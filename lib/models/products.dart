@@ -9,6 +9,7 @@ class Products {
   final String issue_id;
   final String onhand;
   final String price_group_id;
+  final String haft_price;
 
   Products({
     @required this.id,
@@ -19,5 +20,6 @@ class Products {
     this.issue_id,
     this.onhand,
     this.price_group_id,
+    this.haft_price,
   });
 }

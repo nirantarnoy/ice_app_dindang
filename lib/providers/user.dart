@@ -394,10 +394,10 @@ class UserData with ChangeNotifier {
     _authTimer.cancel();
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.clear();
-    // prefs.remove('token');
-    // prefs.remove('username');
-    // prefs.remove('userId');
-    // prefs.remove('studentId');
+    prefs.remove('token');
+    prefs.remove('username');
+    prefs.remove('userId');
+    prefs.remove('studentId');
     _isLoading = false;
     return {'success': true};
   }
@@ -425,7 +425,7 @@ class UserData with ChangeNotifier {
 
       if (response.statusCode == 200) {
         Map<String, dynamic> res = json.decode(response.body);
-        int _islogout = 0;
+        String _islogout = '0';
         if (res == null) {
           _isLoading = false;
           notifyListeners();
@@ -433,11 +433,11 @@ class UserData with ChangeNotifier {
         }
 
         for (var i = 0; i < res['data'].length; i++) {
-          _islogout = int.parse(res['data'][i]['logout_success'].toString());
+          _islogout = res['data'][i]['logout_success'].toString();
         }
         _isLoading = false;
         notifyListeners();
-        if (_islogout == 1) {
+        if (_islogout == '1') {
           logout_success = true;
           _authenticatedUser = null;
           _isauthenuser = false;

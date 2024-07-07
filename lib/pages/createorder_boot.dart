@@ -252,7 +252,6 @@ class _CreateorderBootPageState extends State<CreateorderBootPage> {
                               _saleqtyTextController.text = onhand.toString();
                             } else {
                               // print('can sale');
-
                             }
                           },
                         )),
@@ -321,7 +320,7 @@ class _CreateorderBootPageState extends State<CreateorderBootPage> {
                                     textColor: Colors.white,
                                     fontSize: 16.0);
 
-                                // Scaffold.of(context).showSnackBar(
+                                // ScaffoldMessenger.of(context).showSnackBar(
                                 //   SnackBar(
                                 //     content: Row(
                                 //       children: <Widget>[

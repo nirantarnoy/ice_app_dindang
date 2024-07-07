@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:ice_app_new/models/findtransfer.dart';
+import 'package:ice_app_new/models/transfer_branch.dart';
 
 import 'package:ice_app_new/models/transferin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,11 +17,16 @@ class TransferinData with ChangeNotifier {
   final String url_to_accept_transfer =
       //   "http://192.168.1.120/icesystembp/frontend/web/api/transfer/inlist";
       "http://103.253.73.108/icesystemdindang/frontend/web/api/transfer/accepttransfer";
+  final String url_to_find_transfer_branch =
+      //   "http://192.168.1.120/icesystembp/frontend/web/api/transfer/inlist";
+      "http://103.253.73.108/icesystemdindang/frontend/web/api/transfer/gettransferbranch";
 
   List<Transferin> _transferin;
   List<Transferin> get listtransferin => _transferin;
   List<FindTransfer> _findtransfer;
   List<FindTransfer> get findtransfer => _findtransfer;
+  List<TransferBranchModel> _transferbranch;
+  List<TransferBranchModel> get listtransferbranch => _transferbranch;
 
   bool _isLoading = false;
   bool _isApicon = false;
@@ -30,6 +36,11 @@ class TransferinData with ChangeNotifier {
 
   set idTransferin(int val) {
     _id = val;
+    notifyListeners();
+  }
+
+  set listtransferbranch(List<TransferBranchModel> val) {
+    _transferbranch = val;
     notifyListeners();
   }
 
@@ -299,5 +310,64 @@ class TransferinData with ChangeNotifier {
     } catch (_) {
       _isApicon = false;
     }
+  }
+
+  Future<dynamic> fetTransferBranch() async {
+    // _isLoading = true;
+    notifyListeners();
+    final Map<String, dynamic> filterData = {
+      'company_id': 1,
+      'branch_id': 1,
+    };
+    try {
+      http.Response response;
+      response = await http.post(
+        Uri.parse(url_to_find_transfer_branch),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(filterData),
+      );
+
+      print("call transfer in");
+      if (response.statusCode == 200) {
+        Map<String, dynamic> res = json.decode(response.body);
+        List<TransferBranchModel> data = [];
+        print('data branch length is ${res["data"].length}');
+        //    print('data server is ${res["data"]}');
+
+        if (res == null) {
+          _isLoading = false;
+          notifyListeners();
+          return;
+        }
+
+        for (var i = 0; i < res['data'].length; i++) {
+          // var product = Transferin.fromJson(res[i]);
+          //print(res['data'][i]['code']);
+          // data.add(product);
+          final TransferBranchModel _result = TransferBranchModel(
+            id: res['data'][i]['id'].toString(),
+            name: res['data'][i]['name'].toString(),
+          );
+
+          //  print('data from server is ${customerresult}');
+          data.add(_result);
+        }
+
+        listtransferbranch = data;
+        _isLoading = false;
+        _isApicon = true;
+        notifyListeners();
+        return listtransferbranch;
+      }
+    } catch (_) {
+      _isApicon = false;
+    }
+  }
+
+  Future<List> findBranch(String query) async {
+    await Future.delayed(Duration(microseconds: 500));
+    return listtransferbranch
+        .where((item) => item.name.toLowerCase().contains(query))
+        .toList();
   }
 }
