@@ -52,7 +52,7 @@ class _CreateorderNewPosPageState extends State<CreateorderNewPosPage> {
     // }
     Provider.of<OrderData>(context, listen: false).fetProductPos();
     customer_type = 0;
-    selectedValue = '91';
+    selectedValue = '71';
     selectedValueName = 'สด-หน้าบ้าน';
     super.initState();
   }

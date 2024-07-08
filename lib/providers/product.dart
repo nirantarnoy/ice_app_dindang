@@ -335,11 +335,11 @@ class ProductData with ChangeNotifier {
           notifyListeners();
           return;
         }
-        if (res['data'] == null) {
-          _isLoading = false;
-          notifyListeners();
-          return;
-        }
+        // if (res['data'] == null) {
+        //   _isLoading = false;
+        //   notifyListeners();
+        //   return;
+        // }
 
         for (var i = 0; i < res['data'].length; i++) {
           // var product = Products.fromJson(res[i]);
