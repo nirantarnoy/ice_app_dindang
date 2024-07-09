@@ -545,7 +545,7 @@ class _CreateorderNewPosPageState extends State<CreateorderNewPosPage> {
                     onTap: () {
                       setState(() {
                         customer_type = 0;
-                        selectedValue = '91'; // dindang = 71
+                        selectedValue = '71'; // dindang = 71
                         selectedValueName = 'สด-หน้าบ้าน';
                       });
                     },

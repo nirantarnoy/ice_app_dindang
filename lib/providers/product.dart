@@ -495,6 +495,7 @@ class ProductData with ChangeNotifier {
         .map((e) => {
               'product_id': e.product_id,
               'qty': e.qty,
+              'taypay_no': e.taypay_no,
             })
         .toList();
 

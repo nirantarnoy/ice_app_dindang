@@ -507,9 +507,19 @@ class _ProductrecCheckoutPageState extends State<ProductrecCheckoutPage> {
               child: Row(
                 children: <Widget>[
                   Expanded(
-                    flex: 3,
+                    flex: 2,
                     child: Text(
                       'รายการ',
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      'แถว',
                       style: TextStyle(
                         fontSize: 10,
                         color: Colors.black,
@@ -581,9 +591,20 @@ class _ProductrecCheckoutPageState extends State<ProductrecCheckoutPage> {
         child: Row(
           children: <Widget>[
             Expanded(
-              flex: 3,
+              flex: 2,
               child: Text(
                 'รวมจำนวน',
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Text(
+                '',
                 style: TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
@@ -1029,9 +1050,19 @@ class _ProductrecCheckoutPageState extends State<ProductrecCheckoutPage> {
             return Row(
               children: <Widget>[
                 Expanded(
-                  flex: 3,
+                  flex: 2,
                   child: Text(
                     '${order_items[index].product_code} ${order_items[index].product_name}',
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    '${order_items[index].taypay_no}',
                     style: TextStyle(
                       fontSize: 10,
                       color: Colors.black,

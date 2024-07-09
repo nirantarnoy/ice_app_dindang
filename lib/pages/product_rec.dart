@@ -37,9 +37,11 @@ class ProductRecPage extends StatefulWidget {
 
 class _ProductRecPageState extends State<ProductRecPage> {
   final TextEditingController _typeAheadController = TextEditingController();
+  final TextEditingController _taypaytextcontroller = TextEditingController();
   String selectedValue;
   String selectedValueName;
   int isuserconfirm = 0;
+  String taypay_no = '';
   List<Addprodrec> orderItems = [];
 
   var _isInit = true;
@@ -236,6 +238,26 @@ class _ProductRecPageState extends State<ProductRecPage> {
                       ],
                     ),
                     SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(children: <Widget>[
+                        Expanded(
+                          child: TextField(
+                            controller: _taypaytextcontroller,
+                            onChanged: (value) {
+                              setState(() {
+                                _taypaytextcontroller.text = value;
+                                _taypaytextcontroller.selection =
+                                    TextSelection.fromPosition(TextPosition(
+                                        offset:
+                                            _taypaytextcontroller.text.length));
+                              });
+                            },
+                          ),
+                        ),
+                      ]),
+                    ),
+                    SizedBox(height: 10),
                     // SizedBox(height: 90),
                     Padding(
                       padding: EdgeInsets.fromLTRB(0.0, 45.0, 10.0, 0.0),
@@ -270,6 +292,7 @@ class _ProductRecPageState extends State<ProductRecPage> {
                                   product_code: product_code,
                                   product_name: product_name,
                                   qty: _saleqtyTextController.text,
+                                  taypay_no: _taypaytextcontroller.text,
                                 );
                                 setState(() {
                                   orderItems.add(order_item);

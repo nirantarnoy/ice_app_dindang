@@ -725,7 +725,7 @@ class OrderData with ChangeNotifier {
         .map((e) => {
               'product_id': e.product_id,
               'qty': double.parse(e.qty),
-              'price': e.sale_price,
+              'price': e.original_sale_price,
               'price_group_id': e.price_group_id,
               'original_sale_price': e.original_sale_price,
               'haft_cal': e.haft_cal,
